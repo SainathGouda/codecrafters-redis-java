@@ -1,6 +1,4 @@
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -16,12 +14,18 @@ public class Main {
             serverSocket.setReuseAddress(true);
             // Wait for connection from client.
             clientSocket = serverSocket.accept();
-            InputStream inputStream = clientSocket.getInputStream();
-            OutputStream outputStream = clientSocket.getOutputStream();
+            BufferedReader inputStream = new BufferedReader(
+                    new InputStreamReader(clientSocket.getInputStream()));
+            BufferedWriter outputStream = new BufferedWriter(
+                    new OutputStreamWriter(clientSocket.getOutputStream()));
 
-            while(inputStream.available()>0){
-                outputStream.write("+PONG\r\n".getBytes());
-                outputStream.flush();
+            String input;
+            while((input = inputStream.readLine()) != null) {
+                if ("ping".equalsIgnoreCase(input)) {
+                    outputStream.write("+PONG\r\n");
+                    // To send the data immediately instead of waiting to be filled
+                    outputStream.flush();
+                }
             }
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
