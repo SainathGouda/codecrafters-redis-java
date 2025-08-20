@@ -1,3 +1,5 @@
+import client.ClientHandler;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -12,20 +14,11 @@ public class Main {
         try {
             serverSocket = new ServerSocket(port);
             serverSocket.setReuseAddress(true);
-            // Wait for connection from client.
-            clientSocket = serverSocket.accept();
-            BufferedReader inputStream = new BufferedReader(
-                    new InputStreamReader(clientSocket.getInputStream()));
-            BufferedWriter outputStream = new BufferedWriter(
-                    new OutputStreamWriter(clientSocket.getOutputStream()));
 
-            String input;
-            while((input = inputStream.readLine()) != null) {
-                if ("ping".equalsIgnoreCase(input)) {
-                    outputStream.write("+PONG\r\n");
-                    // To send the data immediately instead of waiting to be filled
-                    outputStream.flush();
-                }
+            while (true) {
+                // Wait for connection from client.
+                clientSocket = serverSocket.accept();
+                new Thread(new ClientHandler(clientSocket)).start();
             }
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
