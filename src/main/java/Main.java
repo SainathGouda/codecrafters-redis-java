@@ -1,4 +1,6 @@
 import client.ClientHandler;
+import command.CommandHandler;
+import command.CommandProcessor;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -18,7 +20,7 @@ public class Main {
             while (true) {
                 // Wait for connection from client.
                 clientSocket = serverSocket.accept();
-                new Thread(new ClientHandler(clientSocket)).start();
+                new Thread(new ClientHandler(clientSocket, new CommandProcessor(new CommandHandler()))).start();
             }
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
