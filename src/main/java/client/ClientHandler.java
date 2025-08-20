@@ -1,12 +1,16 @@
 package client;
 
+import command.CommandProcessor;
+
 import java.io.*;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable{
     private final Socket clientSocket;
-    public ClientHandler(Socket clientSocket){
+    private final CommandProcessor  commandProcessor;
+    public ClientHandler(Socket clientSocket,  CommandProcessor commandProcessor) {
         this.clientSocket = clientSocket;
+        this.commandProcessor = commandProcessor;
     }
 
     @Override
@@ -16,13 +20,9 @@ public class ClientHandler implements Runnable{
 
             String line;
             while((line = inputStream.readLine()) != null){
-                if("ping".equalsIgnoreCase(line)){
-                    outputStream.write("+PONG\r\n");
-                }
-                else if("echo".equalsIgnoreCase(line)){
-                    inputStream.readLine();
-                    String message = inputStream.readLine();
-                    outputStream.write(String.format("$%d\r\n%s\r\n", message.length(), message));
+                String command = line;
+                if (!command.isEmpty()){
+                    commandProcessor.processCommand(command, outputStream, inputStream);
                 }
                 //To send the data immediately instead of waiting to be filled
                 outputStream.flush();
