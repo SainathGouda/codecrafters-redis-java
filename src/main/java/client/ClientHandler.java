@@ -18,9 +18,14 @@ public class ClientHandler implements Runnable{
             while((line = inputStream.readLine()) != null){
                 if("ping".equalsIgnoreCase(line)){
                     outputStream.write("+PONG\r\n");
-                    //To send the data immediately instead of waiting to be filled
-                    outputStream.flush();
                 }
+                else if("echo".equalsIgnoreCase(line)){
+                    inputStream.readLine();
+                    String message = inputStream.readLine();
+                    outputStream.write(String.format("$%d\r\n%s\r\n", message.length(), message));
+                }
+                //To send the data immediately instead of waiting to be filled
+                outputStream.flush();
             }
         } catch (IOException e) {
             System.out.println("Error while handling client: " + e.getMessage());
