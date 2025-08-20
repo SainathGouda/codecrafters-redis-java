@@ -18,7 +18,7 @@ public class CommandHandler {
     public void handleEcho(BufferedWriter outputStream, BufferedReader inputStream) throws IOException {
         inputStream.readLine();
         String message = inputStream.readLine();
-        outputStream.write(message.length()+RESPConstants.CRLF+message+RESPConstants.CRLF);
+        outputStream.write(RESPConstants.BULK_STRING_PREFIX+message.length()+RESPConstants.CRLF+message+RESPConstants.CRLF);
     }
 
     public void handleSet(BufferedWriter outputStream, BufferedReader inputStream) throws IOException {
