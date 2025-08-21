@@ -23,10 +23,7 @@ public class Storage {
 
     public void setListLeft(String key, List<String> values) {
         if (this.listValue.containsKey(key)) {
-            List<String> list = getList(key);
-            for (String value : list) {
-                list.addFirst(value);
-            }
+            values.addAll(0, getList(key));
         }
         this.listValue.put(key, values);
     }
