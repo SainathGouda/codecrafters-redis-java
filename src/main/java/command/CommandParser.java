@@ -1,5 +1,7 @@
 package command;
 
+import constant.RESPConstants;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ public class CommandParser {
         }
 
         public CommandWithArgs parseCommand(String firstLine) throws IOException{
-            if(firstLine == null || !firstLine.startsWith("*")){
+            if(firstLine == null || !firstLine.startsWith(RESPConstants.ARRAY_PREFIX)){
                 throw new IOException("Invalid command format");
             }
 

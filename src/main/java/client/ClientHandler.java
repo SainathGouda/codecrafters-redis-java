@@ -21,15 +21,15 @@ public class ClientHandler implements Runnable{
              BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));) {
 
             String firstLine;
-            while((firstLine = inputStream.readLine())!=null){
-                if(firstLine.startsWith(RESPConstants.ARRAY_PREFIX)){
-                    throw new IOException("Invalid command format");
+            while(true){
+                firstLine = inputStream.readLine();
+                if(firstLine != null) {
+                    CommandParser.RedisCommandParser redisCommandParser = new CommandParser.RedisCommandParser(inputStream);
+                    CommandParser.CommandWithArgs commandWithArgs = redisCommandParser.parseCommand(firstLine);
+                    commandProcessor.processCommand(outputStream, commandWithArgs);
+                    //To send the data immediately instead of waiting to be filled
+                    outputStream.flush();
                 }
-                CommandParser.RedisCommandParser redisCommandParser = new CommandParser.RedisCommandParser(inputStream);
-                CommandParser.CommandWithArgs commandWithArgs = redisCommandParser.parseCommand(firstLine);
-                commandProcessor.processCommand(outputStream, commandWithArgs);
-                //To send the data immediately instead of waiting to be filled
-                outputStream.flush();
             }
         } catch (IOException e) {
             System.out.println("Error while handling client: " + e.getMessage());
