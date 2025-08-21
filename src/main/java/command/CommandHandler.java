@@ -59,7 +59,8 @@ public class CommandHandler {
         int listStartIndex = commandWithArgs.listStartIndex();
         int listEndIndex = commandWithArgs.listEndIndex();
 
-        List<String> lists = storage.getList(key, listStartIndex, listEndIndex);
-        RespParser.writeSimpleString(lists, outputStream);
+        List<String> array = storage.getList(key, listStartIndex, listEndIndex);
+        int arrLength = array.size();
+        RespParser.writeArray(arrLength, array, outputStream);
     }
 }
