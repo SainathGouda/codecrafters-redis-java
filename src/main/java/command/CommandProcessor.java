@@ -14,20 +14,22 @@ public class CommandProcessor {
     }
 
     public void processCommand(String command, BufferedWriter outputStream, BufferedReader inputStream) throws IOException {
-        String commandName = command.toUpperCase();
+        CommandParser.RedisCommandParser redisCommandParser = new CommandParser.RedisCommandParser(inputStream);
+        CommandParser.CommandWithArgs commandWithArgs = redisCommandParser.parseCommand();
+        String commandName = commandWithArgs.getCommand();
 
         switch (commandName) {
             case CommandConstants.PING:
                 commandHandler.handlePing(outputStream);
                 break;
             case CommandConstants.ECHO:
-                commandHandler.handleEcho(outputStream, inputStream);
+                commandHandler.handleEcho(outputStream, commandWithArgs);
                 break;
             case CommandConstants.SET:
-                commandHandler.handleSet(outputStream, inputStream);
+                commandHandler.handleSet(outputStream, commandWithArgs);
                 break;
             case CommandConstants.GET:
-                commandHandler.handleGet(outputStream, inputStream);
+                commandHandler.handleGet(outputStream, commandWithArgs);
                 break;
         }
     }

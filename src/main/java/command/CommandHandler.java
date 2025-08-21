@@ -1,43 +1,47 @@
 package command;
 
-import constant.RESPConstants;
 import constant.ResponseConstants;
+import data.Storage;
+import util.RespParser;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
 public class CommandHandler {
-    private static ConcurrentHashMap<String, String> cMap = new ConcurrentHashMap<>(); // Thread safe
+    Storage storage = new Storage();
 
     public void handlePing(BufferedWriter outputStream) throws IOException {
-        outputStream.write(RESPConstants.SIMPLE_STRING_PREFIX+ResponseConstants.PONG+RESPConstants.CRLF);
+        RespParser.writeSimpleString(ResponseConstants.PONG, outputStream);
     }
 
-    public void handleEcho(BufferedWriter outputStream, BufferedReader inputStream) throws IOException {
-        inputStream.readLine();
-        String message = inputStream.readLine();
-        outputStream.write(RESPConstants.BULK_STRING_PREFIX+message.length()+RESPConstants.CRLF+message+RESPConstants.CRLF);
+    public void handleEcho(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        List<String> messages = commandWithArgs.getArguments();
+        String message = messages.getFirst();
+        RespParser.writeBulkString(message, outputStream);
     }
 
-    public void handleSet(BufferedWriter outputStream, BufferedReader inputStream) throws IOException {
-        inputStream.readLine();
-        String key = inputStream.readLine();
-        inputStream.readLine();
-        String value = inputStream.readLine();
-        cMap.put(key, value);
-        outputStream.write(RESPConstants.SIMPLE_STRING_PREFIX+ResponseConstants.OK+RESPConstants.CRLF);
-    }
+    public void handleSet(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String key = commandWithArgs.getKey();
+        String value = commandWithArgs.getValue();
+        long ttl = commandWithArgs.getTTL() == -1 ? -1 : System.currentTimeMillis() + commandWithArgs.getTTL();
 
-    public void handleGet(BufferedWriter outputStream, BufferedReader inputStream) throws IOException {
-        inputStream.readLine();
-        String key = inputStream.readLine();
-        String value = cMap.get(key);
-        if (value != null) {
-            outputStream.write(RESPConstants.BULK_STRING_PREFIX+value.length()+RESPConstants.CRLF+value+RESPConstants.CRLF);
+        if (key != null && value != null) {
+            storage.setData(key, value, ttl);
+            RespParser.writeSimpleString(ResponseConstants.OK, outputStream);
         } else {
-            outputStream.write(RESPConstants.NULL_BULK_STRING);
+            RespParser.writeErrorString(outputStream);
+        }
+    }
+
+    public void handleGet(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String key = commandWithArgs.getKey();
+        String value = storage.getValue(key);
+
+        if (storage.hasKey(key)) {
+            RespParser.writeBulkString(value, outputStream);
+        } else {
+            RespParser.writeNullBulkString(outputStream);
         }
     }
 }
