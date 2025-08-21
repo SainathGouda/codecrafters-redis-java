@@ -13,8 +13,10 @@ public class CommandParser {
             this.inputStream = inputStream;
         }
 
-        public CommandWithArgs parseCommand() throws IOException{
-            String firstLine = inputStream.readLine();
+        public CommandWithArgs parseCommand(String firstLine) throws IOException{
+            if(firstLine == null || !firstLine.startsWith("*")){
+                throw new IOException("Invalid command format");
+            }
 
             //Parse number of arguments (*3)
             int numOfArgs = Integer.parseInt(firstLine.substring(1));

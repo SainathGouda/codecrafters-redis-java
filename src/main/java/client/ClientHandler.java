@@ -1,6 +1,8 @@
 package client;
 
+import command.CommandParser;
 import command.CommandProcessor;
+import constant.RESPConstants;
 
 import java.io.*;
 import java.net.Socket;
@@ -18,9 +20,14 @@ public class ClientHandler implements Runnable{
         try (BufferedReader inputStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));) {
 
-            while(true){
-                System.out.println("Command: " + inputStream.lines() + ": " + inputStream.toString());
-                commandProcessor.processCommand(outputStream, inputStream);
+            String firstLine;
+            while((firstLine = inputStream.readLine())!=null){
+                if(firstLine.startsWith(RESPConstants.ARRAY_PREFIX)){
+                    throw new IOException("Invalid command format");
+                }
+                CommandParser.RedisCommandParser redisCommandParser = new CommandParser.RedisCommandParser(inputStream);
+                CommandParser.CommandWithArgs commandWithArgs = redisCommandParser.parseCommand(firstLine);
+                commandProcessor.processCommand(outputStream, commandWithArgs);
                 //To send the data immediately instead of waiting to be filled
                 outputStream.flush();
             }
