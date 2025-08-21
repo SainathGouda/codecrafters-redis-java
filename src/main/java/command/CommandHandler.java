@@ -87,7 +87,13 @@ public class CommandHandler {
         }
         int removeCount = Integer.parseInt(commandWithArgs.getRemoveCount());
 
-        List<String> popped = storage.removeFromList(key, removeCount);
-        RespParser.writeArray(popped.size(), popped, outputStream);
+        if (removeCount == 0) {
+            String popped = storage.removeFromList(key);
+            RespParser.writeBulkString(popped, outputStream);
+        }
+        else {
+            List<String> popped = storage.removeFromList(key, removeCount);
+            RespParser.writeArray(popped.size(), popped, outputStream);
+        }
     }
 }
