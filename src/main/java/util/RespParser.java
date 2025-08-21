@@ -5,10 +5,17 @@ import constant.ResponseConstants;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.List;
 
 public class RespParser {
     public static void writeSimpleString(String message, BufferedWriter outputStream) throws IOException {
         outputStream.write(RESPConstants.SIMPLE_STRING_PREFIX+message+RESPConstants.CRLF);
+    }
+
+    public static void writeSimpleString(List<String> messages, BufferedWriter outputStream) throws IOException {
+        for (String message : messages) {
+            outputStream.write(RESPConstants.SIMPLE_STRING_PREFIX + message + RESPConstants.CRLF);
+        }
     }
 
     public static void writeErrorString(BufferedWriter outputStream) throws IOException {

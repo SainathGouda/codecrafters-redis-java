@@ -31,6 +31,9 @@ public class CommandProcessor {
             case CommandConstants.RPUSH:
                 commandHandler.handleRPush(outputStream, commandWithArgs);
                 break;
+            case CommandConstants.LRANGE:
+                commandHandler.handleLRange(outputStream, commandWithArgs);
+                break;
         }
     }
 }

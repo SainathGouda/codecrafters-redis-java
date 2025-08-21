@@ -53,4 +53,13 @@ public class CommandHandler {
         int listLength = storage.getListLength(key);
         RespParser.writeIntegerString(listLength, outputStream);
     }
+
+    public void handleLRange(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String key = commandWithArgs.getKey();
+        int listStartIndex = commandWithArgs.listStartIndex();
+        int listEndIndex = commandWithArgs.listEndIndex();
+
+        List<String> lists = storage.getList(key, listStartIndex, listEndIndex);
+        RespParser.writeSimpleString(lists, outputStream);
+    }
 }

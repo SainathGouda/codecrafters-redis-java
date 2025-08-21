@@ -1,5 +1,6 @@
 package data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,6 +31,16 @@ public class Storage {
 
     public int getListLength(String key) {
         return listValue.get(key).size();
+    }
+
+    public List<String> getList(String key, int listStartIndex, int listEndIndex) {
+        if (listStartIndex > listEndIndex) {
+            return new ArrayList<>();
+        }
+        int listLength = getListLength(key);
+        listEndIndex = Math.min(listEndIndex, listLength);
+        List<String> list = getList(key);
+        return list.subList(listStartIndex, listEndIndex+1);
     }
 
     public long getExpiry(String key) {

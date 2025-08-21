@@ -58,6 +58,14 @@ public class CommandParser {
             return arguments.subList(2, arguments.size());
         }
 
+        public int listStartIndex(){
+            return Integer.parseInt(arguments.get(2));
+        }
+
+        public int listEndIndex(){
+            return Integer.parseInt(arguments.get(3));
+        }
+
         public String getKey(){
             return arguments.size() > 1 ? arguments.get(1) : null;
         }
