@@ -8,4 +8,5 @@ public class CommandConstants {
     public static final String RPUSH = "RPUSH";
     public static final String LRANGE = "LRANGE";
     public static final String LPUSH = "LPUSH";
+    public static final String LLEN = "LLEN";
 }

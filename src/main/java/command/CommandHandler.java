@@ -72,4 +72,11 @@ public class CommandHandler {
         int listLength = storage.getListLength(key);
         RespParser.writeIntegerString(listLength, outputStream);
     }
+
+    public void handleLLen(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String key = commandWithArgs.getKey();
+        int listLength = storage.getListLength(key);
+
+        RespParser.writeIntegerString(listLength, outputStream);
+    }
 }
