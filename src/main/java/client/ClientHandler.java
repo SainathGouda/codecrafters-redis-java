@@ -18,13 +18,9 @@ public class ClientHandler implements Runnable{
         try (BufferedReader inputStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));) {
 
-            String line;
-            while((line = inputStream.readLine()) != null){
-                String command = line;
-                System.out.println("Command: " + inputStream);
-                if (!command.isEmpty()){
-                    commandProcessor.processCommand(command, outputStream, inputStream);
-                }
+            while(true){
+                System.out.println("Command: " + inputStream.lines() + ": " + inputStream.toString());
+                commandProcessor.processCommand(outputStream, inputStream);
                 //To send the data immediately instead of waiting to be filled
                 outputStream.flush();
             }

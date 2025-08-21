@@ -13,7 +13,7 @@ public class CommandProcessor {
         this.commandHandler = commandHandler;
     }
 
-    public void processCommand(String command, BufferedWriter outputStream, BufferedReader inputStream) throws IOException {
+    public void processCommand(BufferedWriter outputStream, BufferedReader inputStream) throws IOException {
         CommandParser.RedisCommandParser redisCommandParser = new CommandParser.RedisCommandParser(inputStream);
         CommandParser.CommandWithArgs commandWithArgs = redisCommandParser.parseCommand();
         String commandName = commandWithArgs.getCommand();
