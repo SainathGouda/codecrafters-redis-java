@@ -54,6 +54,10 @@ public class CommandParser {
             return arguments.subList(1, arguments.size());
         }
 
+        public List<String> getArgumentsWithoutKey(){
+            return arguments.subList(2, arguments.size());
+        }
+
         public String getKey(){
             return arguments.size() > 1 ? arguments.get(1) : null;
         }

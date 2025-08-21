@@ -2,7 +2,6 @@ package client;
 
 import command.CommandParser;
 import command.CommandProcessor;
-import constant.RESPConstants;
 
 import java.io.*;
 import java.net.Socket;

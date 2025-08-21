@@ -2,7 +2,6 @@ package command;
 
 import constant.CommandConstants;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
@@ -28,6 +27,9 @@ public class CommandProcessor {
                 break;
             case CommandConstants.GET:
                 commandHandler.handleGet(outputStream, commandWithArgs);
+                break;
+            case CommandConstants.RPUSH:
+                commandHandler.handleRPush(outputStream, commandWithArgs);
                 break;
         }
     }

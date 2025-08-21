@@ -44,4 +44,13 @@ public class CommandHandler {
             RespParser.writeNullBulkString(outputStream);
         }
     }
+
+    public void handleRPush(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String key = commandWithArgs.getKey();
+        List<String> values = commandWithArgs.getArgumentsWithoutKey();
+
+        storage.setList(key, values);
+        int listLength = storage.getListLength(key);
+        RespParser.writeIntegerString(listLength, outputStream);
+    }
 }

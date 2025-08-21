@@ -1,20 +1,35 @@
 package data;
 
-import util.RespParser;
-
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Storage {
-    private final ConcurrentHashMap<String, String> value = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, String> setValue = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Long> expiry = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, List<String>> listValue = new ConcurrentHashMap<>();
 
     public void setData(String key, String value, long ttl) {
-        this.value.put(key, value);
+        this.setValue.put(key, value);
         this.expiry.put(key, ttl);
     }
 
+    public void setList(String key, List<String> values) {
+        if (this.listValue.containsKey(key)) {
+            values.addAll(getList(key));
+        }
+        this.listValue.put(key, values);
+    }
+
     public String getValue(String key) {
-        return value.get(key);
+        return setValue.get(key);
+    }
+
+    public List<String> getList(String key) {
+        return listValue.get(key);
+    }
+
+    public int getListLength(String key) {
+        return listValue.get(key).size();
     }
 
     public long getExpiry(String key) {
@@ -22,7 +37,7 @@ public class Storage {
     }
 
     public void remove(String key) {
-        value.remove(key);
+        setValue.remove(key);
         expiry.remove(key);
     }
 
@@ -39,6 +54,6 @@ public class Storage {
             remove(key);
             return false;
         }
-        return value.containsKey(key);
+        return setValue.containsKey(key);
     }
 }

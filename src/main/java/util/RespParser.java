@@ -5,7 +5,6 @@ import constant.ResponseConstants;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.List;
 
 public class RespParser {
     public static void writeSimpleString(String message, BufferedWriter outputStream) throws IOException {
@@ -26,5 +25,9 @@ public class RespParser {
 
     public static void writeNullBulkString(BufferedWriter outputStream) throws IOException {
         outputStream.write(RESPConstants.NULL_BULK_STRING);
+    }
+
+    public static void writeIntegerString(int message, BufferedWriter outputStream) throws IOException {
+        outputStream.write(RESPConstants.INTEGER_PREFIX+message+RESPConstants.CRLF);
     }
 }
