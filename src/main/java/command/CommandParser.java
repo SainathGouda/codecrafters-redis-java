@@ -80,5 +80,9 @@ public class CommandParser {
             }
             return -1;
         }
+
+        public String getRemoveCount(){
+            return arguments.size() > 2 ? arguments.get(2) : "0";
+        }
     }
 }
