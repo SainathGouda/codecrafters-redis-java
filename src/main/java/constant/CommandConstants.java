@@ -7,4 +7,5 @@ public class CommandConstants {
     public static final String GET = "GET";
     public static final String RPUSH = "RPUSH";
     public static final String LRANGE = "LRANGE";
+    public static final String LPUSH = "LPUSH";
 }

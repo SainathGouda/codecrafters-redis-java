@@ -34,6 +34,9 @@ public class CommandProcessor {
             case CommandConstants.LRANGE:
                 commandHandler.handleLRange(outputStream, commandWithArgs);
                 break;
+            case CommandConstants.LPUSH:
+                commandHandler.handleLPush(outputStream, commandWithArgs);
+                break;
         }
     }
 }

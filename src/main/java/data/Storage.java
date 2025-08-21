@@ -21,6 +21,16 @@ public class Storage {
         this.listValue.put(key, values);
     }
 
+    public void setListLeft(String key, List<String> values) {
+        if (this.listValue.containsKey(key)) {
+            List<String> list = getList(key);
+            for (String value : list) {
+                list.addFirst(value);
+            }
+        }
+        this.listValue.put(key, values);
+    }
+
     public String getValue(String key) {
         return setValue.get(key);
     }
