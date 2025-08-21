@@ -30,15 +30,16 @@ public class Storage {
     }
 
     public int getListLength(String key) {
-        return listValue.get(key).size();
+        return listValue.getOrDefault(key, new ArrayList<>()).size();
     }
 
     public List<String> getList(String key, int listStartIndex, int listEndIndex) {
-        if (!this.listValue.containsKey(key) || listStartIndex > listEndIndex) {
-            return new ArrayList<>();
-        }
         int listLength = getListLength(key);
-        if (listStartIndex >= listLength) {
+
+        listStartIndex = (listStartIndex < 0) ? listStartIndex+listLength : listStartIndex;
+        listEndIndex  = (listEndIndex < 0) ? listEndIndex+listLength : listEndIndex;
+
+        if (!this.listValue.containsKey(key) || listStartIndex > listEndIndex || listStartIndex >= listLength) {
             return new ArrayList<>();
         }
 
