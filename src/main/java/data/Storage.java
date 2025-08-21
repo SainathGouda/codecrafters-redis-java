@@ -38,7 +38,7 @@ public class Storage {
             return new ArrayList<>();
         }
         int listLength = getListLength(key);
-        if (listStartIndex >= listLength ||  listEndIndex >= listLength) {
+        if (listStartIndex >= listLength) {
             return new ArrayList<>();
         }
 
