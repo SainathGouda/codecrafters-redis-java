@@ -66,7 +66,7 @@ public class Storage {
     public String removeFromList(String key) {
         List<String> list = getList(key);
         String popped = list.removeFirst();
-        setList(key, list);
+        this.listValue.put(key, list);
 
         return popped;
     }
