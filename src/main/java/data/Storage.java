@@ -39,6 +39,8 @@ public class Storage {
         listStartIndex = (listStartIndex < 0) ? listStartIndex+listLength : listStartIndex;
         listEndIndex  = (listEndIndex < 0) ? listEndIndex+listLength : listEndIndex;
 
+        listStartIndex = Math.max(0, listStartIndex);
+
         if (!this.listValue.containsKey(key) || listStartIndex > listEndIndex || listStartIndex >= listLength) {
             return new ArrayList<>();
         }
