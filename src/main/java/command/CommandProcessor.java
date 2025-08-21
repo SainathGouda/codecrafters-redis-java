@@ -40,6 +40,9 @@ public class CommandProcessor {
             case CommandConstants.LLEN:
                 commandHandler.handleLLen(outputStream, commandWithArgs);
                 break;
+            case CommandConstants.LPOP:
+                commandHandler.handleLPop(outputStream, commandWithArgs);
+                break;
         }
     }
 }

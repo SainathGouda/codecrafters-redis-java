@@ -79,4 +79,14 @@ public class CommandHandler {
 
         RespParser.writeIntegerString(listLength, outputStream);
     }
+
+    public void handleLPop(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String key = commandWithArgs.getKey();
+        if (storage.getListLength(key) == 0) {
+            RespParser.writeNullBulkString(outputStream);
+        }
+
+        String poped = storage.removeFromList(key);
+        RespParser.writeBulkString(poped, outputStream);
+    }
 }

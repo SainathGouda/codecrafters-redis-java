@@ -63,6 +63,14 @@ public class Storage {
         expiry.remove(key);
     }
 
+    public String removeFromList(String key) {
+        List<String> list = getList(key);
+        String popped = list.removeFirst();
+        setList(key, list);
+
+        return popped;
+    }
+
     private boolean isExpired(String key) {
         long ttl = expiry.get(key);
         if(ttl == -1) {
