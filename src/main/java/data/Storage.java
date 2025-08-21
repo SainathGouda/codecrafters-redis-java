@@ -34,10 +34,14 @@ public class Storage {
     }
 
     public List<String> getList(String key, int listStartIndex, int listEndIndex) {
-        if (listStartIndex > listEndIndex) {
+        if (!this.listValue.containsKey(key) || listStartIndex > listEndIndex) {
             return new ArrayList<>();
         }
         int listLength = getListLength(key);
+        if (listStartIndex >= listLength ||  listEndIndex >= listLength) {
+            return new ArrayList<>();
+        }
+
         listEndIndex = Math.min(listEndIndex+1, listLength);
         List<String> list = getList(key);
         return list.subList(listStartIndex, listEndIndex);
