@@ -21,7 +21,7 @@ public class ClientHandler implements Runnable{
             String line;
             while((line = inputStream.readLine()) != null){
                 String command = line;
-                System.out.println("Command: " + command);
+                System.out.println("Command: " + inputStream);
                 if (!command.isEmpty()){
                     commandProcessor.processCommand(command, outputStream, inputStream);
                 }
