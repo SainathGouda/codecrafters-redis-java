@@ -38,9 +38,9 @@ public class Storage {
             return new ArrayList<>();
         }
         int listLength = getListLength(key);
-        listEndIndex = Math.min(listEndIndex, listLength);
+        listEndIndex = Math.min(listEndIndex+1, listLength);
         List<String> list = getList(key);
-        return list.subList(listStartIndex, listEndIndex+1);
+        return list.subList(listStartIndex, listEndIndex);
     }
 
     public long getExpiry(String key) {
