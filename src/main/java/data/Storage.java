@@ -19,13 +19,15 @@ public class Storage {
         if (this.listValue.containsKey(key)) {
             values.addAll(getList(key));
         }
-        List<Thread> threads = waitList.get(key);
-        if (threads != null) {
-            for (Thread thread : threads) {
-                System.out.println("Thread is interrupting");
-                thread.notify();
-            }
-        }
+//        List<Thread> threads = waitList.get(key);
+//        if (threads != null) {
+//            for (Thread thread : threads) {
+//                System.out.println("Thread is interrupting");
+//                thread.interrupt();
+//            }
+//        }
+        System.out.println("Notifying");
+        notifyAll();
         this.listValue.put(key, values);
     }
 
@@ -102,7 +104,8 @@ public class Storage {
                 Thread currWaitThread = Thread.currentThread();
                 currWaitThreads.add(currWaitThread);
                 waitList.put(key, currWaitThreads);
-                Thread.currentThread().wait(timeoutValue);
+                System.out.println("Going to wait state");
+                wait(timeoutValue);
             } catch (InterruptedException e) {
                 System.out.println("Thread is interrupted");
                 return getBLpopList(key);
