@@ -8,6 +8,7 @@ public class Storage {
     private final ConcurrentHashMap<String, String> setValue = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Long> expiry = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, List<String>> listValue = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, List<Thread>> waitList = new ConcurrentHashMap<>();
 
     public void setData(String key, String value, long ttl) {
         this.setValue.put(key, value);
@@ -18,6 +19,8 @@ public class Storage {
         if (this.listValue.containsKey(key)) {
             values.addAll(getList(key));
         }
+        List<Thread> threads = waitList.get(key);
+        for (Thread thread : threads) {thread.interrupt();}
         this.listValue.put(key, values);
     }
 
@@ -89,15 +92,24 @@ public class Storage {
             if (timeoutValue==0) {
                 timeoutValue = Long.MAX_VALUE;
             }
-            long waitTime = System.currentTimeMillis()+timeoutValue;
-            while (System.currentTimeMillis()<waitTime) {
-                if(getListLength(key)!=0) break;
+            try {
+                List<Thread> currWaitThreads = waitList.getOrDefault(key, new ArrayList<>());
+                Thread currWaitThread = Thread.currentThread();
+                currWaitThreads.add(currWaitThread);
+                waitList.put(key, currWaitThreads);
+                Thread.sleep(timeoutValue);
+            } catch (InterruptedException e) {
+                return getBLpopList(key);
             }
         }
         listLength = getListLength(key);
         if (listLength==0){
             return new ArrayList<>();
         }
+        return getBLpopList(key);
+    }
+
+    private List<String> getBLpopList(String key) {
         List<String> list = getList(key);
         String popped = list.removeFirst();
         this.listValue.put(key, list);
