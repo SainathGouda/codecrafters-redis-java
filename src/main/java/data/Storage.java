@@ -95,10 +95,14 @@ public class Storage {
         long startTime = System.currentTimeMillis();
         try {
             while (waitForever || (System.currentTimeMillis() - startTime) < timeoutValue) {
+                System.out.println("1");
                 if(waitQueue.get(key).peek() == currentThread){
+                    System.out.println("2");
                     if(listValue.containsKey(key)){
+                        System.out.println("3");
                         String popped = listValue.get(key).removeFirst();
                         if(!popped.isEmpty()){
+                            System.out.println("4");
                             waitQueue.get(key).poll();
                             return getBLpopList(key);
                         }
