@@ -43,6 +43,9 @@ public class CommandProcessor {
             case CommandConstants.LPOP:
                 commandHandler.handleLPop(outputStream, commandWithArgs);
                 break;
+            case CommandConstants.BLPOP:
+                commandHandler.handleBLPop(outputStream, commandWithArgs);
+                break;
         }
     }
 }

@@ -10,4 +10,5 @@ public class CommandConstants {
     public static final String LPUSH = "LPUSH";
     public static final String LLEN = "LLEN";
     public static final String LPOP = "LPOP";
+    public static final String BLPOP = "BLPOP";
 }

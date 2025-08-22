@@ -83,6 +83,36 @@ public class Storage {
         return array;
     }
 
+    public List<String> removeFromList(String key, long timeoutValue) throws InterruptedException {
+        int listLength = getListLength(key);
+        if (listLength==0){
+            if (timeoutValue==0) {
+                timeoutValue = Long.MAX_VALUE;
+            }
+            long waitTime = System.currentTimeMillis()+timeoutValue;
+//            try {
+//                Thread.sleep((long) timeoutValue);
+//            } catch (InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//            }
+            while (System.currentTimeMillis()<waitTime) {
+                if(getListLength(key)!=0) break;
+            }
+        }
+        listLength = getListLength(key);
+        if (listLength==0){
+            return new ArrayList<>();
+        }
+        List<String> list = getList(key);
+        String popped = list.removeFirst();
+        this.listValue.put(key, list);
+
+        List<String> array = new ArrayList<>();
+        array.add(key);
+        array.add(popped);
+        return array;
+    }
+
     private boolean isExpired(String key) {
         long ttl = expiry.get(key);
         if(ttl == -1) {

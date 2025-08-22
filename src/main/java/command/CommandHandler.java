@@ -96,4 +96,13 @@ public class CommandHandler {
             RespParser.writeArray(popped.size(), popped, outputStream);
         }
     }
+
+    public void handleBLPop(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException, InterruptedException {
+        String key = commandWithArgs.getKey();
+        long timeoutValue = Long.parseLong(commandWithArgs.getValue());
+
+        List<String> popped = storage.removeFromList(key, timeoutValue);
+        if (popped.isEmpty()) RespParser.writeNullBulkString(outputStream);
+        else RespParser.writeArray(popped.size(), popped, outputStream);
+    }
 }
