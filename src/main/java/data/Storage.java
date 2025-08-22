@@ -98,8 +98,10 @@ public class Storage {
                 // Only first thread in queue may pop
                 if (waitQueue.get(key).peek() == currentThread) {
                     if (listValue.containsKey(key)) {
+                        System.out.println("1");
                         String popped = listValue.get(key).removeFirst();
                         if (popped != null) {
+                            System.out.println("2");
                             waitQueue.get(key).poll(); // remove from queue
                             List<String> array = new ArrayList<>();
                             array.add(key);
