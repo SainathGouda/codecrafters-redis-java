@@ -115,7 +115,8 @@ public class CommandHandler {
         String entryId = commandWithArgs.getStreamEntryId();
         List<String> streamEntries = commandWithArgs.getStreamEntries();
 
-        if (!validation.isValid(entryId, storage.getXAddIdTop(entryId), outputStream)) { return; }
+        entryId = validation.isValid(streamKey, entryId, storage, outputStream);
+        if (entryId.isEmpty()) { return; }
 
         storage.addStreamEntries(streamKey, entryId, streamEntries);
 

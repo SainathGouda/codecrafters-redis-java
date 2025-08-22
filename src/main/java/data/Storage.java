@@ -86,6 +86,10 @@ public class Storage {
         return xAddIdTop;
     }
 
+    public StreamCache getStreamCache(String streamKey){
+        return streamMap.getOrDefault(streamKey, new StreamCache());
+    }
+
     public void remove(String key) {
         setValue.remove(key);
         expiry.remove(key);
