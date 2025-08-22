@@ -1,13 +1,16 @@
 package data;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Storage {
     private final ConcurrentHashMap<String, String> setValue = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Long> expiry = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, List<String>> listValue = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Queue<Thread>> waitQueue = new ConcurrentHashMap<>();
 
     public void setData(String key, String value, long ttl) {
         this.setValue.put(key, value);
@@ -19,8 +22,6 @@ public class Storage {
             values.addAll(getList(key));
         }
         this.listValue.put(key, values);
-        System.out.println("Interrupting");
-        notifyAll();
     }
 
     public void setListLeft(String key, List<String> values) {
@@ -87,24 +88,34 @@ public class Storage {
 
     public List<String>  removeFromList(String key, long timeoutValue) {
         timeoutValue = timeoutValue * 1000;
-        int listLength = getListLength(key);
+        boolean waitForever = (timeoutValue == 0);
+        Thread currentThread = Thread.currentThread();
 
-        if (listLength == 0) {
-            if (timeoutValue == 0) timeoutValue = Long.MAX_VALUE;
-            try {
-                System.out.println("Sleeping");
-                wait(timeoutValue);
-            } catch (InterruptedException e) {
-                System.out.println("Interrupted while sleeping");
-                return getBLpopList(key);
+        waitQueue.computeIfAbsent(key, k -> new LinkedList<>()).add(currentThread);
+        long startTime = System.currentTimeMillis();
+        try {
+            while (waitForever || (System.currentTimeMillis() - startTime < timeoutValue)) {
+                // Only first thread in queue may pop
+                if (waitQueue.get(key).peek() == currentThread) {
+                    if (listValue.containsKey(key)) {
+                        String popped = listValue.get(key).removeFirst();
+                        if (popped != null) {
+                            waitQueue.get(key).poll(); // remove from queue
+                            List<String> array = new ArrayList<>();
+                            array.add(key);
+                            array.add(popped);
+                            return array;
+                        }
+                    }
+                }
             }
+        } catch (Exception e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            // Ensure cleanup if timed out or interrupted
+            waitQueue.get(key).remove(currentThread);
         }
-
-        listLength = getListLength(key);
-        if (listLength==0){
-            return new ArrayList<>();
-        }
-        return getBLpopList(key);
+        return new ArrayList<>();
     }
 //
     private List<String> getBLpopList(String key) {
