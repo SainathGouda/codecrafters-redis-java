@@ -101,6 +101,7 @@ public class Storage {
                 waitList.put(key, currWaitThreads);
                 Thread.sleep(timeoutValue);
             } catch (InterruptedException e) {
+                System.out.println("Thread is interrupted");
                 return getBLpopList(key);
             }
         }
