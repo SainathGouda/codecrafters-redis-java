@@ -110,15 +110,11 @@ public class Storage {
         } finally {
             waitQueue.get(key).remove(currentThread);
         }
-//        int listLength = getListLength(key);
-//        if (listLength==0){
-//
-//        }
-//        listLength = getListLength(key);
-//        if (listLength==0){
-//            return new ArrayList<>();
-//        }
-        return new ArrayList<>();
+        int listLength = getListLength(key);
+        if (listLength==0){
+            return new ArrayList<>();
+        }
+        return getBLpopList(key);
     }
 //
     private List<String> getBLpopList(String key) {
