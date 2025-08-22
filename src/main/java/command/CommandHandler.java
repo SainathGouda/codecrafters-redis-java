@@ -3,6 +3,7 @@ package command;
 import constant.ResponseConstants;
 import data.Storage;
 import util.RespParser;
+import util.XAddValidation;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public class CommandHandler {
     Storage storage;
+    XAddValidation validation = new XAddValidation();
 
     public CommandHandler(Storage storage) {
         this.storage = storage;
@@ -112,6 +114,8 @@ public class CommandHandler {
         String streamKey = commandWithArgs.getKey();
         String entryId = commandWithArgs.getStreamEntryId();
         List<String> streamEntries = commandWithArgs.getStreamEntries();
+
+        if (!validation.isValid(entryId, storage.getXAddIdTop(entryId), outputStream)) { return; }
 
         storage.addStreamEntries(streamKey, entryId, streamEntries);
 

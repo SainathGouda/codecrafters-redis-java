@@ -9,6 +9,7 @@ public class Storage {
     private final ConcurrentHashMap<String, Long> expiry = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, List<String>> listValue = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, StreamCache> streamMap = new ConcurrentHashMap<>();
+    private static String xAddIdTop = "0-0";
 
     public void setData(String key, String value, long ttl) {
         this.setValue.put(key, value);
@@ -78,6 +79,11 @@ public class Storage {
         StreamCache streamCache = streamMap.getOrDefault(streamKey, new StreamCache());
         streamCache.addEntry(entryId, streamEntries);
         streamMap.put(streamKey, streamCache);
+        xAddIdTop = entryId;
+    }
+
+    public String getXAddIdTop(String streamKey){
+        return xAddIdTop;
     }
 
     public void remove(String key) {
