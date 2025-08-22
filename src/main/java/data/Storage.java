@@ -8,7 +8,7 @@ public class Storage {
     private final ConcurrentHashMap<String, String> setValue = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Long> expiry = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, List<String>> listValue = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, List<Thread>> waitList = new ConcurrentHashMap<>();
+//    private final ConcurrentHashMap<String, List<Thread>> waitList = new ConcurrentHashMap<>();
 
     public void setData(String key, String value, long ttl) {
         this.setValue.put(key, value);
@@ -93,23 +93,23 @@ public class Storage {
         return array;
     }
 
-    public List<String> removeFromList(String key, long timeoutValue) {
+    public List<String>  removeFromList(String key, long timeoutValue) {
         int listLength = getListLength(key);
         if (listLength==0){
             if (timeoutValue==0) {
                 timeoutValue = Long.MAX_VALUE;
             }
-            try {
-                List<Thread> currWaitThreads = waitList.getOrDefault(key, new ArrayList<>());
-                Thread currWaitThread = Thread.currentThread();
-                currWaitThreads.add(currWaitThread);
-                waitList.put(key, currWaitThreads);
+            synchronized (Thread.currentThread()){ try {
+//                List<Thread> currWaitThreads = waitList.getOrDefault(key, new ArrayList<>());
+//                Thread currWaitThread = Thread.currentThread();
+//                currWaitThreads.add(currWaitThread);
+//                waitList.put(key, currWaitThreads);
                 System.out.println("Going to wait state");
                 wait(timeoutValue);
             } catch (InterruptedException e) {
                 System.out.println("Thread is interrupted");
                 return getBLpopList(key);
-            }
+            } }
         }
         listLength = getListLength(key);
         if (listLength==0){
