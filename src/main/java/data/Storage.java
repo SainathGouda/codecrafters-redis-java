@@ -1,5 +1,7 @@
 package data;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,7 +10,6 @@ public class Storage {
     private final ConcurrentHashMap<String, String> setValue = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Long> expiry = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, List<String>> listValue = new ConcurrentHashMap<>();
-//    private final ConcurrentHashMap<String, List<Thread>> waitList = new ConcurrentHashMap<>();
 
     public void setData(String key, String value, long ttl) {
         this.setValue.put(key, value);
@@ -19,15 +20,10 @@ public class Storage {
         if (this.listValue.containsKey(key)) {
             values.addAll(getList(key));
         }
-//        List<Thread> threads = waitList.get(key);
-//        if (threads != null) {
-//            for (Thread thread : threads) {
-//                System.out.println("Thread is interrupting");
-//                thread.interrupt();
-//            }
-//        }
-        System.out.println("Notifying");
-        notifyAll();
+        synchronized (Thread.currentThread()){
+            System.out.println("Notify");
+            notifyAll();
+        }
         this.listValue.put(key, values);
     }
 
@@ -99,17 +95,15 @@ public class Storage {
             if (timeoutValue==0) {
                 timeoutValue = Long.MAX_VALUE;
             }
-            synchronized (Thread.currentThread()){ try {
-//                List<Thread> currWaitThreads = waitList.getOrDefault(key, new ArrayList<>());
-//                Thread currWaitThread = Thread.currentThread();
-//                currWaitThreads.add(currWaitThread);
-//                waitList.put(key, currWaitThreads);
-                System.out.println("Going to wait state");
-                wait(timeoutValue);
-            } catch (InterruptedException e) {
-                System.out.println("Thread is interrupted");
-                return getBLpopList(key);
-            } }
+            //Blocking
+            synchronized (Thread.currentThread()){
+                try {
+                    System.out.println("Waiting");
+                    wait(timeoutValue);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
         listLength = getListLength(key);
         if (listLength==0){
@@ -117,7 +111,7 @@ public class Storage {
         }
         return getBLpopList(key);
     }
-
+//
     private List<String> getBLpopList(String key) {
         List<String> list = getList(key);
         String popped = list.removeFirst();
