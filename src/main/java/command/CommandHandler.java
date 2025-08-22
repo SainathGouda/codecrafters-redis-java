@@ -97,7 +97,7 @@ public class CommandHandler {
         }
     }
 
-    public void handleBLPop(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException, InterruptedException {
+    public void handleBLPop(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         String key = commandWithArgs.getKey();
         long timeoutValue = Long.parseLong(commandWithArgs.getValue());
 
