@@ -20,7 +20,9 @@ public class Storage {
             values.addAll(getList(key));
         }
         List<Thread> threads = waitList.get(key);
-        for (Thread thread : threads) {thread.interrupt();}
+        if (threads != null) {
+            for (Thread thread : threads) {thread.interrupt();}
+        }
         this.listValue.put(key, values);
     }
 
