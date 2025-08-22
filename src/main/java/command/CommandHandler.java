@@ -9,7 +9,11 @@ import java.io.IOException;
 import java.util.List;
 
 public class CommandHandler {
-    Storage storage = new Storage();
+    Storage storage;
+
+    public CommandHandler(Storage storage) {
+        this.storage = storage;
+    }
 
     public void handlePing(BufferedWriter outputStream) throws IOException {
         RespParser.writeSimpleString(ResponseConstants.PONG, outputStream);
