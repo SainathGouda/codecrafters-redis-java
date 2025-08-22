@@ -12,7 +12,7 @@ public class CommandProcessor {
         this.commandHandler = commandHandler;
     }
 
-    public void processCommand(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+    public void processCommand(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException, InterruptedException {
         String commandName = commandWithArgs.getCommand();
 
         switch (commandName) {
