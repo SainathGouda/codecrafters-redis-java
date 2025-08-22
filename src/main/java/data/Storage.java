@@ -21,7 +21,10 @@ public class Storage {
         }
         List<Thread> threads = waitList.get(key);
         if (threads != null) {
-            for (Thread thread : threads) {thread.interrupt();}
+            for (Thread thread : threads) {
+                System.out.println("Thread is interrupting");
+                thread.notify();
+            }
         }
         this.listValue.put(key, values);
     }
@@ -99,7 +102,7 @@ public class Storage {
                 Thread currWaitThread = Thread.currentThread();
                 currWaitThreads.add(currWaitThread);
                 waitList.put(key, currWaitThreads);
-                Thread.sleep(timeoutValue);
+                Thread.currentThread().wait(timeoutValue);
             } catch (InterruptedException e) {
                 System.out.println("Thread is interrupted");
                 return getBLpopList(key);
