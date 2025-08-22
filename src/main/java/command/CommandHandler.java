@@ -100,4 +100,11 @@ public class CommandHandler {
             RespParser.writeArray(popped.size(), popped, outputStream);
         }
     }
+
+    public void handleType(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String key = commandWithArgs.getKey();
+        String dataType = storage.getStoredType(key);
+
+        RespParser.writeSimpleString(dataType, outputStream);
+    }
 }

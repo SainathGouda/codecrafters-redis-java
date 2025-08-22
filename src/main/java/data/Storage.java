@@ -59,6 +59,14 @@ public class Storage {
         return expiry.get(key);
     }
 
+    public String getStoredType(String key) {
+        String value = getValue(key);
+        if (value != null) {
+            return "string";
+        }
+        return "none";
+    }
+
     public void remove(String key) {
         setValue.remove(key);
         expiry.remove(key);
