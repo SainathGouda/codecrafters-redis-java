@@ -20,7 +20,7 @@ public class Storage {
         }
         this.listValue.put(key, values);
         System.out.println("Interrupting");
-        Thread.currentThread().interrupt();
+        notifyAll();
     }
 
     public void setListLeft(String key, List<String> values) {
@@ -93,7 +93,7 @@ public class Storage {
             if (timeoutValue == 0) timeoutValue = Long.MAX_VALUE;
             try {
                 System.out.println("Sleeping");
-                Thread.sleep(timeoutValue);
+                wait(timeoutValue);
             } catch (InterruptedException e) {
                 System.out.println("Interrupted while sleeping");
                 return getBLpopList(key);
