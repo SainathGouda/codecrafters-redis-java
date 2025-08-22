@@ -86,41 +86,7 @@ public class Storage {
         return array;
     }
 
-    public List<String>  removeFromList(String key, long timeoutValue) {
-        timeoutValue = timeoutValue * 1000;
-        boolean waitForever = (timeoutValue == 0);
-        Thread currentThread = Thread.currentThread();
-
-        waitQueue.computeIfAbsent(key, k -> new LinkedList<>()).add(currentThread);
-        long startTime = System.currentTimeMillis();
-        try {
-            while (waitForever || (System.currentTimeMillis() - startTime < timeoutValue)) {
-                // Only first thread in queue may pop
-                if (waitQueue.get(key).peek() == currentThread) {
-                    if (listValue.containsKey(key)) {
-                        System.out.println("1");
-                        String popped = listValue.get(key).removeFirst();
-                        if (popped != null) {
-                            System.out.println("2");
-                            waitQueue.get(key).poll(); // remove from queue
-                            List<String> array = new ArrayList<>();
-                            array.add(key);
-                            array.add(popped);
-                            return array;
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Thread.currentThread().interrupt();
-        } finally {
-            // Ensure cleanup if timed out or interrupted
-            waitQueue.get(key).remove(currentThread);
-        }
-        return new ArrayList<>();
-    }
-//
-    private List<String> getBLpopList(String key) {
+    public List<String> getBLpopList(String key) {
         List<String> list = getList(key);
         String popped = list.removeFirst();
         this.listValue.put(key, list);

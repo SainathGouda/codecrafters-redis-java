@@ -1,5 +1,6 @@
 package command;
 
+import blocking.BlockingOperationsManager;
 import constant.ResponseConstants;
 import data.Storage;
 import util.RespParser;
@@ -10,9 +11,11 @@ import java.util.List;
 
 public class CommandHandler {
     Storage storage;
+    BlockingOperationsManager blockingOperationsManager;
 
     public CommandHandler(Storage storage) {
         this.storage = storage;
+        this.blockingOperationsManager = new BlockingOperationsManager(storage);
     }
 
     public void handlePing(BufferedWriter outputStream) throws IOException {
@@ -56,6 +59,7 @@ public class CommandHandler {
         storage.setList(key, values);
         int listLength = storage.getListLength(key);
         RespParser.writeIntegerString(listLength, outputStream);
+        blockingOperationsManager.notifyBlockedClients(key);
     }
 
     public void handleLRange(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
@@ -75,6 +79,7 @@ public class CommandHandler {
         storage.setListLeft(key, values);
         int listLength = storage.getListLength(key);
         RespParser.writeIntegerString(listLength, outputStream);
+        blockingOperationsManager.notifyBlockedClients(key);
     }
 
     public void handleLLen(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
@@ -105,8 +110,12 @@ public class CommandHandler {
         String key = commandWithArgs.getKey();
         long timeoutValue = Long.parseLong(commandWithArgs.getValue());
 
-        List<String> popped = storage.removeFromList(key, timeoutValue);
-        if (popped.isEmpty()) RespParser.writeNullBulkString(outputStream);
-        else RespParser.writeArray(popped.size(), popped, outputStream);
+        if (storage.getListLength(key) != 0) {
+            List<String> popped = storage.getBLpopList(key);
+            RespParser.writeArray(popped.size(), popped, outputStream);
+            return;
+        }
+
+        blockingOperationsManager.addBlockedClient(key, timeoutValue, outputStream);
     }
 }

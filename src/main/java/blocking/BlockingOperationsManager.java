@@ -36,13 +36,10 @@ public class BlockingOperationsManager {
                 BlockedClient client = it.next();
 
                 if (client.getKey().equals(key)) {
-                    List<String> list = storage.getList(key);
 
-                    if (list != null && !list.isEmpty()) {
-                        String poppedElement = list.remove(0);
-                        List<String> poppedList = new ArrayList<>();
-                        poppedList.add(poppedElement);
-                        RespParser.writeArray(1, poppedList,client.getOutputStream());
+                    if (storage.getListLength(key) != 0) {
+                        List<String> popped = storage.getBLpopList(key);
+                        RespParser.writeArray(popped.size(), popped, client.getOutputStream());
 
                         it.remove();
                         return;
