@@ -1,15 +1,12 @@
 package data;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Storage {
     private final ConcurrentHashMap<String, String> setValue = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Long> expiry = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, List<String>> listValue = new ConcurrentHashMap<>();
+    private final HashMap<String, List<String>> listValue = new HashMap<>();
     private static final ConcurrentHashMap<String, Queue<Thread>> waitQueue = new ConcurrentHashMap<>();
 
     public void setData(String key, String value, long ttl) {
