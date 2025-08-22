@@ -2,13 +2,13 @@ package data;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Storage {
     private final ConcurrentHashMap<String, String> setValue = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Long> expiry = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, List<String>> listValue = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, StreamCache> streamMap = new ConcurrentHashMap<>();
 
     public void setData(String key, String value, long ttl) {
         this.setValue.put(key, value);
@@ -60,11 +60,24 @@ public class Storage {
     }
 
     public String getStoredType(String key) {
-        String value = getValue(key);
-        if (value != null) {
+        if (getValue(key) != null) {
             return "string";
         }
-        return "none";
+        else if (getList(key) != null) {
+            return "list";
+        }
+        else if(streamMap.containsKey(key)) {
+            return "stream";
+        }
+        else {
+            return "none";
+        }
+    }
+
+    public void addStreamEntries(String streamKey, String entryId, List<String> streamEntries){
+        StreamCache streamCache = streamMap.getOrDefault(streamKey, new StreamCache());
+        streamCache.addEntry(entryId, streamEntries);
+        streamMap.put(streamKey, streamCache);
     }
 
     public void remove(String key) {

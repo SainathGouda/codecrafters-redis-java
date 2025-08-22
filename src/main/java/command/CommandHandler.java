@@ -107,4 +107,14 @@ public class CommandHandler {
 
         RespParser.writeSimpleString(dataType, outputStream);
     }
+
+    public void handleXAdd(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String streamKey = commandWithArgs.getKey();
+        String entryId = commandWithArgs.getStreamEntryId();
+        List<String> streamEntries = commandWithArgs.getStreamEntries();
+
+        storage.addStreamEntries(streamKey, entryId, streamEntries);
+
+        RespParser.writeBulkString(entryId, outputStream);
+    }
 }

@@ -46,6 +46,9 @@ public class CommandProcessor {
             case CommandConstants.TYPE:
                 commandHandler.handleType(outputStream, commandWithArgs);
                 break;
+            case CommandConstants.XADD:
+                commandHandler.handleXAdd(outputStream, commandWithArgs);
+                break;
         }
     }
 }
