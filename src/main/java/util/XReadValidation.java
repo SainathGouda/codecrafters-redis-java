@@ -40,6 +40,8 @@ public class XReadValidation {
             StreamCache streamCache = storage.getStreamCache(streamKey);
 
             if (streamCache == null) {
+                outputStream.write("*2\r\n");
+                outputStream.write("$" + streamKey.length() + "\r\n" + streamKey + "\r\n");
                 RespParser.writeArray(0, new ArrayList<>(), outputStream);
                 return;
             }
@@ -49,7 +51,6 @@ public class XReadValidation {
             // Get entries with IDs greater than the specified entry ID
             TreeMap<String, List<String>> entries = new TreeMap<>(streamCache.getEntries().tailMap(entryId, false));
 
-            RespParser.writeArrayLength(1, outputStream);
             RespParser.writeArrayLength(2, outputStream); // Stream key and its entries
             RespParser.writeBulkString(streamKey, outputStream);
             RespParser.writeXEntries(outputStream, entries);
