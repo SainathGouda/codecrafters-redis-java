@@ -47,6 +47,7 @@ public class XReadValidation {
         }
 
         long endTime = System.currentTimeMillis() + blockTimeout;
+        System.out.println("BlockTimeout: "+blockTimeout);
 
         while (true) {
             boolean hasData = false;
