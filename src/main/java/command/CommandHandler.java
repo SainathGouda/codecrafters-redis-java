@@ -115,7 +115,7 @@ public class CommandHandler {
         RespParser.writeSimpleString(dataType, outputStream);
     }
 
-    public synchronized void handleXAdd(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+    public void handleXAdd(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         String streamKey = commandWithArgs.getKey();
         String entryId = commandWithArgs.getStreamEntryId();
         List<String> streamEntries = commandWithArgs.getStreamEntries();
@@ -126,20 +126,6 @@ public class CommandHandler {
         storage.addStreamEntries(streamKey, entryId, streamEntries);
 
         RespParser.writeBulkString(entryId, outputStream);
-
-        // Notify all threads waiting on the specific StreamCache for this stream
-        StreamCache streamCache = storage.getStreamCache(streamKey);
-        if (streamCache != null) {
-            synchronized (streamCache) {
-                streamCache.notifyAll();
-                System.out.println("Notified all XREADs waiting on stream: " + streamKey);
-            }
-        }
-
-        // Also notify threads waiting on `this` (for cases where stream didn't exist yet)
-        synchronized (this) {
-            this.notifyAll();
-        }
     }
 
     public void handleXRange(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
@@ -150,7 +136,7 @@ public class CommandHandler {
         xRangeValidation.isValid(streamKey, startId, endId, storage, outputStream);
     }
 
-    public synchronized void handleXRead(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+    public void handleXRead(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         xReadValidation.isValid(commandWithArgs, storage, outputStream);
     }
 }
