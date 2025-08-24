@@ -217,7 +217,7 @@ public class XReadValidation {
 
             long currentTime = System.currentTimeMillis();
             if (currentTime >= endTime) {
-                System.out.println("Null: time 1. current:"+currentTime+" 2.end:"+endTime);
+                System.out.println("Null: time 1. current:"+System.currentTimeMillis()+" 2.end:"+endTime);
                 outputStream.write("$-1\r\n");
                 outputStream.flush();
                 return;
