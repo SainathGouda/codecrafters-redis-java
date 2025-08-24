@@ -41,60 +41,70 @@ public class XReadValidation {
             return;
         }
 
-        Map<String, TreeMap<String, List<String>>> result = new HashMap<>();
+        String streamKey = streamKeys.getFirst();
+        String entryId = entryIds.getFirst();
+        entryId = entryId.contains("-") ? entryId : entryId + "-0";
 
         long startTime = System.currentTimeMillis();
+        TreeMap<String, List<String>> foundEntries = null;
+
         while (true) {
-            boolean dataFound = false;
-            result.clear();
+            StreamCache streamCache = storage.getStreamCache(streamKey);
 
-            for (int i = 0; i < streamKeys.size(); i++) {
-                String streamKey = streamKeys.get(i);
-                String entryId = entryIds.get(i);
-                StreamCache streamCache = storage.getStreamCache(streamKey);
+            if (streamCache != null) {
+                synchronized (streamCache) {
+                    // Re-check entries
+                    TreeMap<String, List<String>> entries = new TreeMap<>(streamCache.getEntries().tailMap(entryId, false));
 
-                if (streamCache == null) continue;
+                    if (!entries.isEmpty()) {
+                        foundEntries = entries;
+                        break;
+                    }
 
-                entryId = entryId.contains("-") ? entryId : entryId + "-0";
-                TreeMap<String, List<String>> entries = new TreeMap<>(streamCache.getEntries().tailMap(entryId, false));
+                    if (blockTimeoutMillis == 0) break;
 
-                if (!entries.isEmpty()) {
-                    result.put(streamKey, entries);
-                    dataFound = true;
+                    long elapsed = System.currentTimeMillis() - startTime;
+                    long remaining = blockTimeoutMillis - elapsed;
+
+                    if (remaining <= 0) break;
+
+                    try {
+                        streamCache.wait(remaining);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
                 }
-            }
+            } else {
+                // No streamCache yet; wait until it appears or timeout expires
+                if (blockTimeoutMillis == 0) break;
 
-            if (dataFound || blockTimeoutMillis == 0) {
-                break;
-            }
+                long elapsed = System.currentTimeMillis() - startTime;
+                long remaining = blockTimeoutMillis - elapsed;
 
-            long timeElapsed = System.currentTimeMillis() - startTime;
-            long timeRemaining = blockTimeoutMillis - timeElapsed;
+                if (remaining <= 0) break;
 
-            if (timeRemaining <= 0) {
-                break;
-            }
-
-            synchronized (this) {
-                try {
-                    this.wait(timeRemaining);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
+                synchronized (this) {
+                    try {
+                        this.wait(remaining);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
                 }
             }
         }
 
-        if (result.isEmpty()) {
-            RespParser.writeNullBulkString(outputStream);
+        if (foundEntries == null) {
+            RespParser.writeNullBulkString(outputStream); // (nil)
         } else {
-            RespParser.writeArrayLength(result.size(), outputStream);
-            for (Map.Entry<String, TreeMap<String, List<String>>> entry : result.entrySet()) {
-                RespParser.writeArrayLength(2, outputStream);
-                RespParser.writeBulkString(entry.getKey(), outputStream);
-                RespParser.writeXEntries(outputStream, entry.getValue());
-            }
+            RespParser.writeArrayLength(1, outputStream); // Only 1 stream
+            RespParser.writeArrayLength(2, outputStream); // [stream, entries]
+            RespParser.writeBulkString(streamKey, outputStream);
+            RespParser.writeXEntries(outputStream, foundEntries);
         }
+
+        outputStream.flush();
     }
 
     public void isValidWithoutBlock(CommandParser.CommandWithArgs commandWithArgs, Storage storage, BufferedWriter outputStream) throws IOException {
