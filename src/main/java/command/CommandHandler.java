@@ -2,6 +2,7 @@ package command;
 
 import constant.ResponseConstants;
 import data.Storage;
+import data.StreamCache;
 import util.RespParser;
 import util.XAddValidation;
 import util.XRangeValidation;
@@ -126,8 +127,19 @@ public class CommandHandler {
 
         RespParser.writeBulkString(entryId, outputStream);
 
-        this.notifyAll();
-        System.out.println("Notified called");
+        // Notify all threads waiting on the specific StreamCache for this stream
+        StreamCache streamCache = storage.getStreamCache(streamKey);
+        if (streamCache != null) {
+            synchronized (streamCache) {
+                streamCache.notifyAll();
+                System.out.println("Notified all XREADs waiting on stream: " + streamKey);
+            }
+        }
+
+        // Also notify threads waiting on `this` (for cases where stream didn't exist yet)
+        synchronized (this) {
+            this.notifyAll();
+        }
     }
 
     public void handleXRange(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
