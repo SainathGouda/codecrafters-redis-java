@@ -40,8 +40,8 @@ public class XReadValidation {
             StreamCache streamCache = storage.getStreamCache(streamKey);
 
             if (streamCache == null) {
-                outputStream.write("*2\r\n");
-                outputStream.write("$" + streamKey.length() + "\r\n" + streamKey + "\r\n");
+                RespParser.writeArrayLength(2, outputStream);
+                RespParser.writeBulkString(streamKey, outputStream);
                 RespParser.writeArray(0, new ArrayList<>(), outputStream);
                 return;
             }
