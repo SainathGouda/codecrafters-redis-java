@@ -59,12 +59,12 @@ public class XReadValidation {
                 String entryId = entryIds.get(i);
                 StreamCache streamCache = storage.getStreamCache(streamKey);
 
-                if (streamCache == null) {
-                    RespParser.writeArrayLength(2, outputStream);
-                    RespParser.writeBulkString(streamKey, outputStream);
-                    RespParser.writeArray(0, new ArrayList<>(), outputStream);
-                    continue;
-                }
+//                if (streamCache == null) {
+//                    RespParser.writeArrayLength(2, outputStream);
+//                    RespParser.writeBulkString(streamKey, outputStream);
+//                    RespParser.writeArray(0, new ArrayList<>(), outputStream);
+//                    continue;
+//                }
 
                 entryId = entryId.contains("-") ? entryId : entryId + "-0";
 
@@ -98,12 +98,14 @@ public class XReadValidation {
                 }
 
                 if (!isBlocking || blockTimeout <= 0) {
+                    System.out.println("Null: blocking");
                     RespParser.writeNullBulkString(outputStream);
                     return;
                 }
 
                 long currentTime = System.currentTimeMillis();
                 if (currentTime >= endTime) {
+                    System.out.println("Null: time");
                     RespParser.writeNullBulkString(outputStream);
                     return;
                 }
