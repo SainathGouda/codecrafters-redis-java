@@ -78,6 +78,8 @@ public class CommandParser {
             return arguments.size() > 2 ? arguments.get(2) : null;
         }
         public List<String> getStreamEntries() { return arguments.size() > 3 ? arguments.subList(3, arguments.size())  : new ArrayList<>(); }
+        public String getXStartId() { return getArgumentsWithoutKey().getFirst(); }
+        public String getXEndId() { return getArgumentsWithoutKey().getLast(); }
 
         public long getTTL(){
             if(arguments.size()>4 && "PX".equalsIgnoreCase(arguments.get(3))){
