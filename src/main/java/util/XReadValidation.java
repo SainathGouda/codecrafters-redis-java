@@ -1,5 +1,8 @@
 package util;
 
+import command.CommandParser;
+import constant.RESPConstants;
+import constant.ResponseConstants;
 import data.Storage;
 import data.StreamCache;
 
@@ -10,22 +13,46 @@ import java.util.List;
 import java.util.TreeMap;
 
 public class XReadValidation {
-    public void isValid(String streamKey, String entryId, Storage storage, BufferedWriter outputStream) throws IOException {
-        StreamCache streamCache = storage.getStreamCache(streamKey);
+    public void isValid(CommandParser.CommandWithArgs commandWithArgs, Storage storage, BufferedWriter outputStream) throws IOException {
+        List<String> arguments = commandWithArgs.getArguments();
+        int streamsIndex = arguments.indexOf("streams");
 
-        if (streamCache == null) {
-            RespParser.writeArray(0, new ArrayList<>(), outputStream);
+        if (streamsIndex == -1) {
+            outputStream.write(RESPConstants.ERROR_PREFIX+ResponseConstants.INVALID_STREAM+RESPConstants.CRLF);
             return;
         }
 
-        entryId = entryId.contains("-") ? entryId : entryId + "-0";
+        // Extract stream keys and entry IDs
+        List<String> streamKeys = arguments.subList(streamsIndex + 1, streamsIndex + 1 + (arguments.size() - streamsIndex - 1) / 2);
+        List<String> entryIds = arguments.subList(streamsIndex + 1 + streamKeys.size(), arguments.size());
 
-        // Get entries with IDs greater than the specified entry ID
-        TreeMap<String, List<String>> entries = new TreeMap<>(streamCache.getEntries().tailMap(entryId, false));
+        if (streamKeys.size() != entryIds.size()) {
+            outputStream.write(RESPConstants.ERROR_PREFIX+ResponseConstants.MISMATCH_STREAM+RESPConstants.CRLF);
+            return;
+        }
 
-        RespParser.writeArrayLength(1, outputStream);
-        RespParser.writeArrayLength(2, outputStream); // Stream key and its entries
-        RespParser.writeBulkString(streamKey, outputStream);
-        RespParser.writeXEntries(outputStream, entries);
+        // Start constructing the RESP response
+        RespParser.writeArrayLength(streamKeys.size(), outputStream);
+
+        for (int i = 0; i < streamKeys.size(); i++) {
+            String streamKey = commandWithArgs.getXStartId();
+            String entryId = commandWithArgs.getXEndId();
+            StreamCache streamCache = storage.getStreamCache(streamKey);
+
+            if (streamCache == null) {
+                RespParser.writeArray(0, new ArrayList<>(), outputStream);
+                return;
+            }
+
+            entryId = entryId.contains("-") ? entryId : entryId + "-0";
+
+            // Get entries with IDs greater than the specified entry ID
+            TreeMap<String, List<String>> entries = new TreeMap<>(streamCache.getEntries().tailMap(entryId, false));
+
+            RespParser.writeArrayLength(1, outputStream);
+            RespParser.writeArrayLength(2, outputStream); // Stream key and its entries
+            RespParser.writeBulkString(streamKey, outputStream);
+            RespParser.writeXEntries(outputStream, entries);
+        }
     }
 }

@@ -136,9 +136,6 @@ public class CommandHandler {
     }
 
     public void handleXRead(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
-        String streamKey = commandWithArgs.getXStartId();
-        String entryId = commandWithArgs.getXEndId();
-
-        xReadValidation.isValid(streamKey, entryId, storage, outputStream);
+        xReadValidation.isValid(commandWithArgs, storage, outputStream);
     }
 }

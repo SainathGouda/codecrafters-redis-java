@@ -49,12 +49,9 @@ public class RespParser {
 
         for (var entry : entries.entrySet()) {
             writeArrayLength(2, outputStream);
-//            outputStream.write("$" + entry.getKey().length() + "\r\n" + entry.getKey() + "\r\n");
             writeBulkString(entry.getKey(), outputStream);
-//            outputStream.write("*" + entry.getValue().size() + "\r\n");
             writeArrayLength(entry.getValue().size(), outputStream);
             for (String value : entry.getValue()) {
-//                outputStream.write("$" + value.length() + "\r\n" + value + "\r\n");
                 writeBulkString(value, outputStream);
             }
         }
