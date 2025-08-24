@@ -35,8 +35,8 @@ public class XReadValidation {
         RespParser.writeArrayLength(streamKeys.size(), outputStream);
 
         for (int i = 0; i < streamKeys.size(); i++) {
-            String streamKey = commandWithArgs.getXStartId();
-            String entryId = commandWithArgs.getXEndId();
+            String streamKey = streamKeys.get(i);
+            String entryId = entryIds.get(i);
             StreamCache streamCache = storage.getStreamCache(streamKey);
 
             if (streamCache == null) {
