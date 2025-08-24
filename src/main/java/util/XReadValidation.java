@@ -156,7 +156,7 @@ public class XReadValidation {
         }
 
         long endTime = System.currentTimeMillis() + blockTimeout;
-        System.out.println("BlockTimeout: "+blockTimeout);
+        System.out.println("current: "+System.currentTimeMillis());
         System.out.println("endTime: "+endTime);
 
         while(true){
