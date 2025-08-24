@@ -111,6 +111,7 @@ public class XReadValidation {
                 try {
                     //This ensures that while one thread is in the synchronized block, no other thread can execute any synchronized code on the same object
                     synchronized (this) {
+                        System.out.println("Waiting called");
                         this.wait(endTime - currentTime);
                     }
                 } catch (InterruptedException e) {

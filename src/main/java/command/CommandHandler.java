@@ -127,6 +127,7 @@ public class CommandHandler {
         RespParser.writeBulkString(entryId, outputStream);
 
         this.notifyAll();
+        System.out.println("Notified called");
     }
 
     public void handleXRange(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
