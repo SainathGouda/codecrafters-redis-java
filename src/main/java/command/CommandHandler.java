@@ -114,7 +114,7 @@ public class CommandHandler {
         RespParser.writeSimpleString(dataType, outputStream);
     }
 
-    public void handleXAdd(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+    public synchronized void handleXAdd(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         String streamKey = commandWithArgs.getKey();
         String entryId = commandWithArgs.getStreamEntryId();
         List<String> streamEntries = commandWithArgs.getStreamEntries();
@@ -125,6 +125,8 @@ public class CommandHandler {
         storage.addStreamEntries(streamKey, entryId, streamEntries);
 
         RespParser.writeBulkString(entryId, outputStream);
+
+        this.notifyAll();
     }
 
     public void handleXRange(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
@@ -135,7 +137,7 @@ public class CommandHandler {
         xRangeValidation.isValid(streamKey, startId, endId, storage, outputStream);
     }
 
-    public void handleXRead(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+    public synchronized void handleXRead(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         xReadValidation.isValid(commandWithArgs, storage, outputStream);
     }
 }
