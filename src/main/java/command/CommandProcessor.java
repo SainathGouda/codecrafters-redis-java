@@ -52,6 +52,9 @@ public class CommandProcessor {
             case CommandConstants.XRANGE:
                 commandHandler.handleXRange(outputStream, commandWithArgs);
                 break;
+            case CommandConstants.XREAD:
+                commandHandler.handleXRead(outputStream, commandWithArgs);
+                break;
         }
     }
 }

@@ -5,6 +5,7 @@ import data.Storage;
 import util.RespParser;
 import util.XAddValidation;
 import util.XRangeValidation;
+import util.XReadValidation;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -14,6 +15,7 @@ public class CommandHandler {
     Storage storage;
     XAddValidation xAddValidation = new XAddValidation();
     XRangeValidation xRangeValidation = new XRangeValidation();
+    XReadValidation xReadValidation = new XReadValidation();
 
     public CommandHandler(Storage storage) {
         this.storage = storage;
@@ -131,5 +133,12 @@ public class CommandHandler {
         String endId = commandWithArgs.getXEndId();
 
         xRangeValidation.isValid(streamKey, startId, endId, storage, outputStream);
+    }
+
+    public void handleXRead(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String streamKey = commandWithArgs.getXStartId();
+        String entryId = commandWithArgs.getXEndId();
+
+        xReadValidation.isValid(streamKey, entryId, storage, outputStream);
     }
 }

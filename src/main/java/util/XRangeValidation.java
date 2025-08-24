@@ -34,13 +34,6 @@ public class XRangeValidation {
             entries = new TreeMap<>(streamCache.getEntries().subMap(startId, true, endId, true)); // boolean for including end boundaries
         }
 
-        outputStream.write("*" + entries.size() + "\r\n");
-        for (var entry : entries.entrySet()) {
-            outputStream.write("*2\r\n$" + entry.getKey().length() + "\r\n" + entry.getKey() + "\r\n");
-            outputStream.write("*" + entry.getValue().size() + "\r\n");
-            for (String value : entry.getValue()) {
-                outputStream.write("$" + value.length() + "\r\n" + value + "\r\n");
-            }
-        }
+        RespParser.writeXEntries(outputStream, entries);
     }
 }
