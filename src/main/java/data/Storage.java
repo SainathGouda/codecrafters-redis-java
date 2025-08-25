@@ -180,6 +180,7 @@ public class Storage {
     }
 
     public void addTransaction(CommandParser.CommandWithArgs commandWithArgs){
+        System.out.println("Inside add: "+Thread.currentThread());
         transactionMap.get(Thread.currentThread()).add(commandWithArgs);
     }
 }
