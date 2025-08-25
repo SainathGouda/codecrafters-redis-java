@@ -143,6 +143,10 @@ public class CommandHandler {
         String key = commandWithArgs.getKey();
 
         int value = storage.incr(key);
+        if (value == -1) {
+            RespParser.writeNumberErrorString(outputStream);
+            return;
+        }
         RespParser.writeIntegerString(value, outputStream);
     }
 }

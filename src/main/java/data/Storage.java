@@ -148,7 +148,12 @@ public class Storage {
         int intValue = 1;
 
         if (value != null) {
-            intValue += Integer.parseInt(value);
+            try {
+                intValue += Integer.parseInt(value);
+            }
+            catch (NumberFormatException e) {
+                return -1;
+            }
         }
         setData(key, String.valueOf(intValue), expiry);
 
