@@ -163,8 +163,10 @@ public class CommandHandler {
         }
 
         List<CommandParser.CommandWithArgs> queue = storage.execute();
-        if (queue.isEmpty()) {
-            RespParser.writeArrayLength(0, outputStream);
+        CommandProcessor commandProcessor = new CommandProcessor(this, storage);
+        RespParser.writeArrayLength(queue.size(), outputStream);
+        for (CommandParser.CommandWithArgs command : queue) {
+            commandProcessor.processCommand(outputStream, command);
         }
     }
 }
