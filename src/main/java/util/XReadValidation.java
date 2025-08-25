@@ -11,7 +11,7 @@ import java.util.*;
 
 public class XReadValidation {
     public void isValid(CommandParser.CommandWithArgs commandWithArgs, Storage storage, BufferedWriter outputStream) throws IOException {
-        List<String> arguments = commandWithArgs.getArguments();
+        List<String> arguments = commandWithArgs.arguments();
         int streamsIndex = arguments.indexOf("streams");
 
         if (streamsIndex == -1) {

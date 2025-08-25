@@ -26,7 +26,7 @@ public class CommandHandler {
     }
 
     public void handleEcho(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
-        List<String> messages = commandWithArgs.getArguments();
+        List<String> messages = commandWithArgs.arguments();
         String message = messages.getFirst();
         RespParser.writeBulkString(message, outputStream);
     }
@@ -150,13 +150,13 @@ public class CommandHandler {
         RespParser.writeIntegerString(value, outputStream);
     }
 
-    public void handleMulti(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+    public void handleMulti(BufferedWriter outputStream) throws IOException {
         System.out.println("Current thread: " + Thread.currentThread());
         storage.multi();
         RespParser.writeSimpleString(ResponseConstants.OK, outputStream);
     }
 
-    public void handleExec(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+    public void handleExec(BufferedWriter outputStream) throws IOException {
         if (!storage.multiExist()){
             RespParser.writeErrorString(ResponseConstants.EXEC_WITHOUT_MULTI, outputStream);
             return;
@@ -170,11 +170,11 @@ public class CommandHandler {
         }
     }
 
-    public void handleDiscard(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+    public void handleDiscard(BufferedWriter outputStream) throws IOException {
         if (!storage.multiExist()) {
             RespParser.writeErrorString(ResponseConstants.DISCARD_WITHOUT_MULTI, outputStream);
         } else {
-            storage.discardTransactions(commandWithArgs);
+            storage.discardTransactions();
             RespParser.writeSimpleString(ResponseConstants.OK, outputStream);
         }
     }

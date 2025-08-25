@@ -39,57 +39,62 @@ public class CommandParser {
         }
     }
 
-    public static class CommandWithArgs{
-        private final List<String> arguments;
+    public record CommandWithArgs(List<String> arguments) {
 
-        public CommandWithArgs(List<String> arguments){
-            this.arguments = arguments;
-        }
-
-        public String getCommand(){
-            return arguments.getFirst().toUpperCase();
-        }
-
-        public List<String> getArguments(){
-            return arguments.subList(1, arguments.size());
-        }
-
-        public List<String> getArgumentsWithoutKey(){
-            return arguments.subList(2, arguments.size());
-        }
-
-        public int listStartIndex(){
-            return Integer.parseInt(arguments.get(2));
-        }
-
-        public int listEndIndex(){
-            return Integer.parseInt(arguments.get(3));
-        }
-
-        public String getKey(){
-            return arguments.size() > 1 ? arguments.get(1) : null;
-        }
-
-        public String getValue(){
-            return arguments.size() > 2 ? arguments.get(2) : null;
-        }
-
-        public String getStreamEntryId(){
-            return arguments.size() > 2 ? arguments.get(2) : null;
-        }
-        public List<String> getStreamEntries() { return arguments.size() > 3 ? arguments.subList(3, arguments.size())  : new ArrayList<>(); }
-        public String getXStartId() { return getArgumentsWithoutKey().getFirst(); }
-        public String getXEndId() { return getArgumentsWithoutKey().getLast(); }
-
-        public long getTTL(){
-            if(arguments.size()>4 && "PX".equalsIgnoreCase(arguments.get(3))){
-                return Long.parseLong(arguments.get(4));
+        public String getCommand() {
+                return arguments.getFirst().toUpperCase();
             }
-            return -1;
+
+            @Override
+            public List<String> arguments() {
+                return arguments.subList(1, arguments.size());
+            }
+
+            public List<String> getArgumentsWithoutKey() {
+                return arguments.subList(2, arguments.size());
+            }
+
+            public int listStartIndex() {
+                return Integer.parseInt(arguments.get(2));
+            }
+
+            public int listEndIndex() {
+                return Integer.parseInt(arguments.get(3));
+            }
+
+            public String getKey() {
+                return arguments.size() > 1 ? arguments.get(1) : null;
+            }
+
+            public String getValue() {
+                return arguments.size() > 2 ? arguments.get(2) : null;
+            }
+
+            public String getStreamEntryId() {
+                return arguments.size() > 2 ? arguments.get(2) : null;
+            }
+
+        public List<String> getStreamEntries() {
+            return arguments.size() > 3 ? arguments.subList(3, arguments.size()) : new ArrayList<>();
         }
 
-        public String getRemoveCount(){
-            return arguments.size() > 2 ? arguments.get(2) : "0";
+        public String getXStartId() {
+            return getArgumentsWithoutKey().getFirst();
         }
-    }
+
+        public String getXEndId() {
+            return getArgumentsWithoutKey().getLast();
+        }
+
+            public long getTTL() {
+                if (arguments.size() > 4 && "PX".equalsIgnoreCase(arguments.get(3))) {
+                    return Long.parseLong(arguments.get(4));
+                }
+                return -1;
+            }
+
+            public String getRemoveCount() {
+                return arguments.size() > 2 ? arguments.get(2) : "0";
+            }
+        }
 }

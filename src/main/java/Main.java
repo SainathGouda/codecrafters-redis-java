@@ -11,7 +11,7 @@ public class Main {
   public static void main(String[] args){
     System.out.println("Logs from your program will appear here!");
 
-        ServerSocket serverSocket = null;
+        ServerSocket serverSocket;
         Socket clientSocket = null;
         int port = 6379;
         try {

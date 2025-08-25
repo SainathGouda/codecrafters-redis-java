@@ -9,10 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Storage {
     private final static ConcurrentHashMap<String, String> setValue = new ConcurrentHashMap<>();
     private final static ConcurrentHashMap<String, Long> expiry = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, List<String>> listValue = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, StreamCache> streamMap = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<String, List<String>> listValue = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<String, StreamCache> streamMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Thread, List<CommandParser.CommandWithArgs>> transactionMap = new ConcurrentHashMap<>();
-    private static String xAddIdTop = "0-0";
 
     public void setData(String key, String value, long ttl) {
         setValue.put(key, value);
@@ -20,10 +19,10 @@ public class Storage {
     }
 
     public void setList(String key, List<String> values) {
-        if (this.listValue.containsKey(key)) {
+        if (listValue.containsKey(key)) {
             values.addAll(getList(key));
         }
-        this.listValue.put(key, values);
+        listValue.put(key, values);
     }
 
     public void setListLeft(String key, List<String> values) {
@@ -50,7 +49,7 @@ public class Storage {
 
         listStartIndex = Math.max(0, listStartIndex);
 
-        if (!this.listValue.containsKey(key) || listStartIndex > listEndIndex || listStartIndex >= listLength) {
+        if (!listValue.containsKey(key) || listStartIndex > listEndIndex || listStartIndex >= listLength) {
             return new ArrayList<>();
         }
 
@@ -82,11 +81,6 @@ public class Storage {
         StreamCache streamCache = streamMap.getOrDefault(streamKey, new StreamCache());
         streamCache.addEntry(entryId, streamEntries);
         streamMap.put(streamKey, streamCache);
-        xAddIdTop = entryId;
-    }
-
-    public String getXAddIdTop(String streamKey){
-        return xAddIdTop;
     }
 
     public StreamCache getStreamCache(String streamKey){
@@ -101,7 +95,7 @@ public class Storage {
     public String removeFromList(String key) {
         List<String> list = getList(key);
         String popped = list.removeFirst();
-        this.listValue.put(key, list);
+        listValue.put(key, list);
 
         return popped;
     }
@@ -113,19 +107,8 @@ public class Storage {
             String popped = list.removeFirst();
             array.add(popped);
         }
-        this.listValue.put(key, list);
+        listValue.put(key, list);
 
-        return array;
-    }
-
-    public List<String> getBLpopList(String key) {
-        List<String> list = getList(key);
-        String popped = list.removeFirst();
-        this.listValue.put(key, list);
-
-        List<String> array = new ArrayList<>();
-        array.add(key);
-        array.add(popped);
         return array;
     }
 
@@ -175,8 +158,7 @@ public class Storage {
 
     public List<CommandParser.CommandWithArgs> execute(){
         System.out.println("Inside execute: "+transactionMap.keySet());
-        List<CommandParser.CommandWithArgs> queue = transactionMap.remove(Thread.currentThread());
-        return queue;
+        return transactionMap.remove(Thread.currentThread());
     }
 
     public void addTransaction(CommandParser.CommandWithArgs commandWithArgs){
@@ -184,7 +166,7 @@ public class Storage {
         transactionMap.get(Thread.currentThread()).add(commandWithArgs);
     }
 
-    public void discardTransactions(CommandParser.CommandWithArgs commandWithArgs){
+    public void discardTransactions(){
         transactionMap.remove(Thread.currentThread());
     }
 }

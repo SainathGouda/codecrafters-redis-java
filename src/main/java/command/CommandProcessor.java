@@ -8,20 +8,13 @@ import util.RespParser;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
-public class CommandProcessor {
-    public final CommandHandler commandHandler;
-    public final Storage storage;
-
-    public CommandProcessor(CommandHandler commandHandler, Storage storage) {
-        this.commandHandler = commandHandler;
-        this.storage = storage;
-    }
+public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
 
     public void processCommand(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         String commandName = commandWithArgs.getCommand();
 
-        if (!commandName.equals(CommandConstants.EXEC) && !commandName.equals(CommandConstants.DISCARD) && storage.multiExist()){
-            System.out.println("Entering queue: "+Thread.currentThread());
+        if (!commandName.equals(CommandConstants.EXEC) && !commandName.equals(CommandConstants.DISCARD) && storage.multiExist()) {
+            System.out.println("Entering queue: " + Thread.currentThread());
             storage.addTransaction(commandWithArgs);
             RespParser.writeSimpleString(ResponseConstants.QUEUED, outputStream);
             return;
@@ -70,13 +63,13 @@ public class CommandProcessor {
                 commandHandler.handleIncr(outputStream, commandWithArgs);
                 break;
             case CommandConstants.MULTI:
-                commandHandler.handleMulti(outputStream, commandWithArgs);
+                commandHandler.handleMulti(outputStream);
                 break;
             case CommandConstants.EXEC:
-                commandHandler.handleExec(outputStream, commandWithArgs);
+                commandHandler.handleExec(outputStream);
                 break;
             case CommandConstants.DISCARD:
-                commandHandler.handleDiscard(outputStream, commandWithArgs);
+                commandHandler.handleDiscard(outputStream);
                 break;
         }
     }
