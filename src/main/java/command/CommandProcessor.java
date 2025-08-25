@@ -10,16 +10,18 @@ import java.io.IOException;
 
 public class CommandProcessor {
     public final CommandHandler commandHandler;
-    public final Storage storage = new Storage();
+    public final Storage storage;
 
-    public CommandProcessor(CommandHandler commandHandler) {
+    public CommandProcessor(CommandHandler commandHandler, Storage storage) {
         this.commandHandler = commandHandler;
+        this.storage = storage;
     }
 
     public void processCommand(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         String commandName = commandWithArgs.getCommand();
 
         if (!commandName.equals(CommandConstants.EXEC) && storage.multiExist()){
+            System.out.println("Entering queue: "+Thread.currentThread());
             storage.addTransaction(commandWithArgs);
             RespParser.writeSimpleString(ResponseConstants.QUEUED, outputStream);
             return;

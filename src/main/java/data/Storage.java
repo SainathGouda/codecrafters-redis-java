@@ -174,13 +174,13 @@ public class Storage {
     }
 
     public List<CommandParser.CommandWithArgs> execute(){
-        System.out.println("Inside execute"+Thread.currentThread());
+        System.out.println("Inside execute: "+transactionMap.keySet());
         List<CommandParser.CommandWithArgs> queue = transactionMap.remove(Thread.currentThread());
         return queue;
     }
 
     public void addTransaction(CommandParser.CommandWithArgs commandWithArgs){
-        System.out.println("Inside add: "+Thread.currentThread());
+        System.out.println("Inside add: "+transactionMap.keySet());
         transactionMap.get(Thread.currentThread()).add(commandWithArgs);
     }
 }
