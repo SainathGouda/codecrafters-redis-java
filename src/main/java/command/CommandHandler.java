@@ -180,5 +180,7 @@ public class CommandHandler {
 
     public void handleInfo(BufferedWriter outputStream) throws IOException {
         RespParser.writeBulkString("role:"+storage.getRole(), outputStream);
+        RespParser.writeBulkString("master_replid:"+storage.getMasterReplId(), outputStream);
+        RespParser.writeBulkString("master_repl_offset:"+storage.getMasterReplOffset(), outputStream);
     }
 }

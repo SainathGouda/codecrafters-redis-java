@@ -30,6 +30,22 @@ public class Storage {
         config.put("masterAddress", masterAddress);
     }
 
+    public void setMasterReplId(String masterReplId){
+        config.put("master_replid", masterReplId);
+    }
+
+    public String getMasterReplId() {
+        return config.get("master_replid");
+    }
+
+    public void setMasterReplOffset(String masterReplOffset){
+        config.put("master_repl_offset", masterReplOffset);
+    }
+
+    public String getMasterReplOffset() {
+        return config.get("master_repl_offset");
+    }
+
     public void setData(String key, String value, long ttl) {
         setValue.put(key, value);
         expiry.put(key, ttl);
