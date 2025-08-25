@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Storage {
-    private final ConcurrentHashMap<String, String> setValue = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, Long> expiry = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<String, String> setValue = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<String, Long> expiry = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, List<String>> listValue = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, StreamCache> streamMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Thread, List<CommandParser.CommandWithArgs>> transactionMap = new ConcurrentHashMap<>();
     private static String xAddIdTop = "0-0";
 
     public void setData(String key, String value, long ttl) {
-        this.setValue.put(key, value);
-        this.expiry.put(key, ttl);
+        setValue.put(key, value);
+        expiry.put(key, ttl);
     }
 
     public void setList(String key, List<String> values) {
