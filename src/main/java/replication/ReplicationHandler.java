@@ -25,9 +25,10 @@ public class ReplicationHandler {
     }
 
     public void completeHandshakeStepOne() throws Exception {
-        ArrayList<String> handshakeMessages = new ArrayList<>();
-        handshakeMessages.add(CommandConstants.PING);
-        RespParser.writeArray(handshakeMessages.size(), handshakeMessages, slave.getOutputStream());
+//        ArrayList<String> handshakeMessages = new ArrayList<>();
+//        handshakeMessages.add(CommandConstants.PING);
+//        RespParser.writeArray(handshakeMessages.size(), handshakeMessages, slave.getOutputStream());
+        slave.getOutputStream().write("*1\r\n$4\r\nPING\r\n".getBytes());
         slave.getOutputStream().flush();
     }
 
