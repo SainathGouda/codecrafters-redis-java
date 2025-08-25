@@ -1,5 +1,6 @@
 package command;
 
+import constant.CommandConstants;
 import constant.RESPConstants;
 
 import java.io.BufferedReader;
@@ -87,7 +88,7 @@ public class CommandParser {
         }
 
             public long getTTL() {
-                if (arguments.size() > 4 && "PX".equalsIgnoreCase(arguments.get(3))) {
+                if (arguments.size() > 4 && CommandConstants.PX.equalsIgnoreCase(arguments.get(3))) {
                     return Long.parseLong(arguments.get(4));
                 }
                 return -1;

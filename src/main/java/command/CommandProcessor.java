@@ -14,7 +14,6 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
         String commandName = commandWithArgs.getCommand();
 
         if (!commandName.equals(CommandConstants.EXEC) && !commandName.equals(CommandConstants.DISCARD) && storage.multiExist()) {
-            System.out.println("Entering queue: " + Thread.currentThread());
             storage.addTransaction(commandWithArgs);
             RespParser.writeSimpleString(ResponseConstants.QUEUED, outputStream);
             return;

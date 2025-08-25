@@ -151,7 +151,6 @@ public class CommandHandler {
     }
 
     public void handleMulti(BufferedWriter outputStream) throws IOException {
-        System.out.println("Current thread: " + Thread.currentThread());
         storage.multi();
         RespParser.writeSimpleString(ResponseConstants.OK, outputStream);
     }

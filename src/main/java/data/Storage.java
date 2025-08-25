@@ -148,21 +148,17 @@ public class Storage {
 
     public void multi(){
         transactionMap.put(Thread.currentThread(), new ArrayList<>());
-        System.out.println("Inside multi"+transactionMap.keySet());
     }
 
     public boolean multiExist(){
-        System.out.println("Inside exist"+Thread.currentThread());
         return transactionMap.containsKey(Thread.currentThread());
     }
 
     public List<CommandParser.CommandWithArgs> execute(){
-        System.out.println("Inside execute: "+transactionMap.keySet());
         return transactionMap.remove(Thread.currentThread());
     }
 
     public void addTransaction(CommandParser.CommandWithArgs commandWithArgs){
-        System.out.println("Inside add: "+transactionMap.keySet());
         transactionMap.get(Thread.currentThread()).add(commandWithArgs);
     }
 
