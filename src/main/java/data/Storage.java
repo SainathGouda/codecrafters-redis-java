@@ -130,7 +130,7 @@ public class Storage {
     }
 
     private boolean isExpired(String key) {
-        long ttl = expiry.get(key);
+        long ttl = expiry.getOrDefault(key, (long) -1);
         if(ttl == -1) {
             return false;
         }
