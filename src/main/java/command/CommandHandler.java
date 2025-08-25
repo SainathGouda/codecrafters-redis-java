@@ -162,7 +162,7 @@ public class CommandHandler {
             return;
         }
 
-        List<String[]> queue = storage.execute();
+        List<CommandParser.CommandWithArgs> queue = storage.execute();
         if (queue.isEmpty()) {
             RespParser.writeArrayLength(0, outputStream);
         }

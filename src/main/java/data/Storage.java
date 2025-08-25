@@ -1,5 +1,7 @@
 package data;
 
+import command.CommandParser;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,7 +11,7 @@ public class Storage {
     private final ConcurrentHashMap<String, Long> expiry = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, List<String>> listValue = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, StreamCache> streamMap = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<Thread, List<String[]>> transactionMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Thread, List<CommandParser.CommandWithArgs>> transactionMap = new ConcurrentHashMap<>();
     private static String xAddIdTop = "0-0";
 
     public void setData(String key, String value, long ttl) {
@@ -171,9 +173,13 @@ public class Storage {
         return transactionMap.containsKey(Thread.currentThread());
     }
 
-    public List<String[]> execute(){
+    public List<CommandParser.CommandWithArgs> execute(){
         System.out.println("Inside execute"+Thread.currentThread());
-        List<String[]> queue = transactionMap.remove(Thread.currentThread());
+        List<CommandParser.CommandWithArgs> queue = transactionMap.remove(Thread.currentThread());
         return queue;
+    }
+
+    public void addTransaction(CommandParser.CommandWithArgs commandWithArgs){
+        transactionMap.get(Thread.currentThread()).add(commandWithArgs);
     }
 }

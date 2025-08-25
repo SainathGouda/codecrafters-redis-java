@@ -1,12 +1,16 @@
 package command;
 
 import constant.CommandConstants;
+import constant.ResponseConstants;
+import data.Storage;
+import util.RespParser;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 
 public class CommandProcessor {
     public final CommandHandler commandHandler;
+    public final Storage storage = new Storage();
 
     public CommandProcessor(CommandHandler commandHandler) {
         this.commandHandler = commandHandler;
@@ -15,6 +19,11 @@ public class CommandProcessor {
     public void processCommand(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         String commandName = commandWithArgs.getCommand();
 
+        if (!commandName.equals(CommandConstants.EXEC) && storage.multiExist()){
+            storage.addTransaction(commandWithArgs);
+            RespParser.writeSimpleString(ResponseConstants.QUEUED, outputStream);
+            return;
+        }
         switch (commandName) {
             case CommandConstants.PING:
                 commandHandler.handlePing(outputStream);
