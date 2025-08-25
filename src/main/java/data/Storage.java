@@ -57,7 +57,7 @@ public class Storage {
     }
 
     public long getExpiry(String key) {
-        return expiry.get(key);
+        return expiry.getOrDefault(key, (long) -1);
     }
 
     public String getStoredType(String key) {
