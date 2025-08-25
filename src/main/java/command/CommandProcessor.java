@@ -20,7 +20,7 @@ public class CommandProcessor {
     public void processCommand(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         String commandName = commandWithArgs.getCommand();
 
-        if (!commandName.equals(CommandConstants.EXEC) && storage.multiExist()){
+        if (!commandName.equals(CommandConstants.EXEC) && !commandName.equals(CommandConstants.DISCARD) && storage.multiExist()){
             System.out.println("Entering queue: "+Thread.currentThread());
             storage.addTransaction(commandWithArgs);
             RespParser.writeSimpleString(ResponseConstants.QUEUED, outputStream);
@@ -74,6 +74,9 @@ public class CommandProcessor {
                 break;
             case CommandConstants.EXEC:
                 commandHandler.handleExec(outputStream, commandWithArgs);
+                break;
+            case CommandConstants.DISCARD:
+                commandHandler.handleDiscard(outputStream, commandWithArgs);
                 break;
         }
     }

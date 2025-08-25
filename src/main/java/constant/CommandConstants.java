@@ -18,4 +18,5 @@ public class CommandConstants {
     public static final String INCR = "INCR";
     public static final String MULTI = "MULTI";
     public static final String EXEC = "EXEC";
+    public static final String DISCARD = "DISCARD";
 }

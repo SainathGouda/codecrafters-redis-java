@@ -169,4 +169,13 @@ public class CommandHandler {
             commandProcessor.processCommand(outputStream, command);
         }
     }
+
+    public void handleDiscard(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        if (!storage.multiExist()) {
+            RespParser.writeErrorString(ResponseConstants.DISCARD_WITHOUT_MULTI, outputStream);
+        } else {
+            storage.discardTransactions(commandWithArgs);
+            RespParser.writeSimpleString(ResponseConstants.OK, outputStream);
+        }
+    }
 }

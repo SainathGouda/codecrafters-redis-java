@@ -183,4 +183,8 @@ public class Storage {
         System.out.println("Inside add: "+transactionMap.keySet());
         transactionMap.get(Thread.currentThread()).add(commandWithArgs);
     }
+
+    public void discardTransactions(CommandParser.CommandWithArgs commandWithArgs){
+        transactionMap.remove(Thread.currentThread());
+    }
 }

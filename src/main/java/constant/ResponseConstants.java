@@ -10,4 +10,5 @@ public class ResponseConstants {
     public static final String INVALID_BLOCK_TIMEOUT = "ERR Invalid block timeout value";
     public static final String NUMBER_FORMAT_EXCEPTION="ERR value is not an integer or out of range";
     public static final String EXEC_WITHOUT_MULTI="ERR EXEC without MULTI";
+    public static final String DISCARD_WITHOUT_MULTI="ERR DISCARD without MULTI";
 }
