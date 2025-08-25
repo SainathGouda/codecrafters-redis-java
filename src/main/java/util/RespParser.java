@@ -4,6 +4,7 @@ import constant.RESPConstants;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -32,6 +33,13 @@ public class RespParser {
         writeArrayLength(length, outputStream);
         for (String element : array) {
             outputStream.write(RESPConstants.BULK_STRING_PREFIX+element.length()+RESPConstants.CRLF+element+RESPConstants.CRLF);
+        }
+    }
+
+    public static void writeArray(int length, List<String> array, OutputStream outputStream) throws IOException {
+        outputStream.write((RESPConstants.ARRAY_PREFIX + length + RESPConstants.CRLF).getBytes());
+        for (String element : array) {
+            outputStream.write((RESPConstants.BULK_STRING_PREFIX+element.length()+RESPConstants.CRLF+element+RESPConstants.CRLF).getBytes());
         }
     }
 
