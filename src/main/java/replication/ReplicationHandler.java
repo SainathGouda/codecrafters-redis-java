@@ -18,15 +18,13 @@ public class ReplicationHandler {
     }
 
     public void completeHandShake() throws Exception {
-        synchronized (this) {
-            completeHandshakeStepOne();
-            completeHandshakeStepTwo();
-            completeHandshakeStepThree();
-        }
+        completeHandshakeStepOne();
+        completeHandshakeStepTwo();
+        completeHandshakeStepThree();
         slave.close();
     }
 
-    public void completeHandshakeStepOne() throws Exception {
+    public synchronized void completeHandshakeStepOne() throws Exception {
 //        ArrayList<String> handshakeMessages = new ArrayList<>();
 //        handshakeMessages.add(CommandConstants.PING);
 //        RespParser.writeArray(handshakeMessages.size(), handshakeMessages, slave.getOutputStream());
@@ -34,12 +32,12 @@ public class ReplicationHandler {
         slave.getOutputStream().flush();
     }
 
-    public void completeHandshakeStepTwo() throws Exception {
+    public synchronized void completeHandshakeStepTwo() throws Exception {
         slave.getOutputStream().write("*3\\r\\n$8\\r\\nREPLCONF\\r\\n$14\\r\\nlistening-port\\r\\n$4\\r\\n6380\\r\\n".getBytes());
         slave.getOutputStream().flush();
     }
 
-    public void completeHandshakeStepThree() throws Exception {
+    public synchronized void completeHandshakeStepThree() throws Exception {
         slave.getOutputStream().write("*3\\r\\n$8\\r\\nREPLCONF\\r\\n$4\\r\\ncapa\\r\\n$6\\r\\npsync2\\r\\n".getBytes());
         slave.getOutputStream().flush();
     }
