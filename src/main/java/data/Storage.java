@@ -7,11 +7,28 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Storage {
+    private final static ConcurrentHashMap<String, String> config = new ConcurrentHashMap<>();
     private final static ConcurrentHashMap<String, String> setValue = new ConcurrentHashMap<>();
     private final static ConcurrentHashMap<String, Long> expiry = new ConcurrentHashMap<>();
     private final static ConcurrentHashMap<String, List<String>> listValue = new ConcurrentHashMap<>();
     private final static ConcurrentHashMap<String, StreamCache> streamMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Thread, List<CommandParser.CommandWithArgs>> transactionMap = new ConcurrentHashMap<>();
+
+    public void setPort(int port) {
+        config.put("port", String.valueOf(port));
+    }
+
+    public void setRole(String role) {
+        config.put("role", role);
+    }
+
+    public String getRole() {
+        return config.get("role");
+    }
+
+    public void setMasterAddress(String masterAddress) {
+        config.put("masterAddress", masterAddress);
+    }
 
     public void setData(String key, String value, long ttl) {
         setValue.put(key, value);

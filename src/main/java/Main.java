@@ -10,10 +10,20 @@ import java.net.Socket;
 public class Main {
   public static void main(String[] args){
     System.out.println("Logs from your program will appear here!");
+        Storage storage = new Storage();
         int port = 6379;
+        String role = "master";
+        String masterAddress = "";
         for(int i = 0; i < args.length; i++){
             if(args[i].equals("--port")){ port = Integer.parseInt(args[i+1]); }
+            if (args[i].equals("--replicaof")){
+                role = "slave";
+                masterAddress = args[i+1];
+            }
         }
+        storage.setPort(port);
+        storage.setRole(role);
+        storage.setMasterAddress(masterAddress);
 
         ServerSocket serverSocket;
         Socket clientSocket = null;
@@ -24,7 +34,6 @@ public class Main {
             while (true) {
                 // Wait for connection from client.
                 clientSocket = serverSocket.accept();
-                Storage storage = new Storage();
                 new Thread(new ClientHandler(clientSocket, new CommandProcessor(new CommandHandler(storage), storage))).start();
             }
         } catch (IOException e) {

@@ -179,6 +179,6 @@ public class CommandHandler {
     }
 
     public void handleInfo(BufferedWriter outputStream) throws IOException {
-        RespParser.writeBulkString("role:master", outputStream);
+        RespParser.writeBulkString("role:"+storage.getRole(), outputStream);
     }
 }
