@@ -70,6 +70,9 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
             case CommandConstants.DISCARD:
                 commandHandler.handleDiscard(outputStream);
                 break;
+            case CommandConstants.INFO:
+                commandHandler.handleInfo(outputStream);
+                break;
         }
     }
 }

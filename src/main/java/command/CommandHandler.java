@@ -177,4 +177,8 @@ public class CommandHandler {
             RespParser.writeSimpleString(ResponseConstants.OK, outputStream);
         }
     }
+
+    public void handleInfo(BufferedWriter outputStream) throws IOException {
+        RespParser.writeBulkString("role:master", outputStream);
+    }
 }
