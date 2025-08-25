@@ -40,7 +40,7 @@ public class CommandHandler {
             storage.setData(key, value, ttl);
             RespParser.writeSimpleString(ResponseConstants.OK, outputStream);
         } else {
-            RespParser.writeErrorString(outputStream);
+            RespParser.writeErrorString(ResponseConstants.ERROR, outputStream);
         }
     }
 
@@ -144,7 +144,7 @@ public class CommandHandler {
 
         int value = storage.incr(key);
         if (value == -1) {
-            RespParser.writeNumberErrorString(outputStream);
+            RespParser.writeErrorString(ResponseConstants.NUMBER_FORMAT_EXCEPTION, outputStream);
             return;
         }
         RespParser.writeIntegerString(value, outputStream);
@@ -154,5 +154,11 @@ public class CommandHandler {
         System.out.println("Current thread: " + Thread.currentThread());
         storage.multi();
         RespParser.writeSimpleString(ResponseConstants.OK, outputStream);
+    }
+
+    public void handleExec(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        if (!storage.multiExist()){
+            RespParser.writeErrorString(ResponseConstants.EXEC_WITHOUT_MULTI, outputStream);
+        }
     }
 }

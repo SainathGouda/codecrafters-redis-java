@@ -1,7 +1,6 @@
 package util;
 
 import command.CommandParser;
-import constant.RESPConstants;
 import constant.ResponseConstants;
 import data.Storage;
 import data.StreamCache;
@@ -16,7 +15,7 @@ public class XReadValidation {
         int streamsIndex = arguments.indexOf("streams");
 
         if (streamsIndex == -1) {
-            outputStream.write(RESPConstants.ERROR_PREFIX+ResponseConstants.INVALID_STREAM+RESPConstants.CRLF);
+            RespParser.writeErrorString(ResponseConstants.INVALID_STREAM, outputStream);
             return;
         }
 
@@ -25,7 +24,7 @@ public class XReadValidation {
         List<String> entryIds = arguments.subList(streamsIndex + 1 + streamKeys.size(), arguments.size());
 
         if (streamKeys.size() != entryIds.size()) {
-            outputStream.write(RESPConstants.ERROR_PREFIX+ResponseConstants.MISMATCH_STREAM+RESPConstants.CRLF);
+            RespParser.writeErrorString(ResponseConstants.MISMATCH_STREAM, outputStream);
             return;
         }
 

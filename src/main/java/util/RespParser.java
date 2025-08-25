@@ -13,12 +13,8 @@ public class RespParser {
         outputStream.write(RESPConstants.SIMPLE_STRING_PREFIX+message+RESPConstants.CRLF);
     }
 
-    public static void writeErrorString(BufferedWriter outputStream) throws IOException {
-        outputStream.write(RESPConstants.ERROR_PREFIX+ResponseConstants.ERROR+RESPConstants.CRLF);
-    }
-
-    public static void writeNumberErrorString(BufferedWriter outputStream) throws IOException {
-        outputStream.write(RESPConstants.ERROR_PREFIX+ResponseConstants.NUMBER_FORMAT_EXCEPTION+RESPConstants.CRLF);
+    public static void writeErrorString(String error, BufferedWriter outputStream) throws IOException {
+        outputStream.write(RESPConstants.ERROR_PREFIX+error+RESPConstants.CRLF);
     }
 
     public static void writeBulkString(String message, BufferedWriter outputStream) throws IOException {
