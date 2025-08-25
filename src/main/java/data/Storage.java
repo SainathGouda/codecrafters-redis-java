@@ -170,4 +170,10 @@ public class Storage {
         System.out.println("Inside exist"+Thread.currentThread());
         return transactionMap.containsKey(Thread.currentThread());
     }
+
+    public List<String[]> execute(){
+        System.out.println("Inside execute"+Thread.currentThread());
+        List<String[]> queue = transactionMap.remove(Thread.currentThread());
+        return queue;
+    }
 }

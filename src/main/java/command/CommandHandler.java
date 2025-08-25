@@ -159,6 +159,12 @@ public class CommandHandler {
     public void handleExec(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         if (!storage.multiExist()){
             RespParser.writeErrorString(ResponseConstants.EXEC_WITHOUT_MULTI, outputStream);
+            return;
+        }
+
+        List<String[]> queue = storage.execute();
+        if (queue.isEmpty()) {
+            RespParser.writeArrayLength(0, outputStream);
         }
     }
 }
