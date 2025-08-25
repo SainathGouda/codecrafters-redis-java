@@ -141,4 +141,17 @@ public class Storage {
         }
         return setValue.containsKey(key);
     }
+
+    public int incr(String key){
+        String value = getValue(key);
+        long expiry = getExpiry(key);
+        int intValue = 1;
+
+        if (value != null) {
+            intValue += Integer.parseInt(value);
+        }
+        setData(key, String.valueOf(intValue), expiry);
+
+        return intValue;
+    }
 }

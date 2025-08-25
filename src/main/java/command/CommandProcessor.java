@@ -55,6 +55,9 @@ public class CommandProcessor {
             case CommandConstants.XREAD:
                 commandHandler.handleXRead(outputStream, commandWithArgs);
                 break;
+            case CommandConstants.INCR:
+                commandHandler.handleIncr(outputStream, commandWithArgs);
+                break;
         }
     }
 }

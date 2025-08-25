@@ -2,7 +2,6 @@ package command;
 
 import constant.ResponseConstants;
 import data.Storage;
-import data.StreamCache;
 import util.RespParser;
 import util.XAddValidation;
 import util.XRangeValidation;
@@ -138,5 +137,12 @@ public class CommandHandler {
 
     public void handleXRead(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         xReadValidation.isValid(commandWithArgs, storage, outputStream);
+    }
+
+    public void handleIncr(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String key = commandWithArgs.getKey();
+
+        int value = storage.incr(key);
+        RespParser.writeIntegerString(value, outputStream);
     }
 }
