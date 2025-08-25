@@ -18,9 +18,11 @@ public class ReplicationHandler {
     }
 
     public void completeHandShake() throws Exception {
-        completeHandshakeStepOne();
-        completeHandshakeStepTwo();
-        completeHandshakeStepThree();
+        synchronized (this) {
+            completeHandshakeStepOne();
+            completeHandshakeStepTwo();
+            completeHandshakeStepThree();
+        }
         slave.close();
     }
 
