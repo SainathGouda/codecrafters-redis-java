@@ -16,4 +16,5 @@ public class CommandConstants {
     public static final String XRANGE = "XRANGE";
     public static final String XREAD = "XREAD";
     public static final String INCR = "INCR";
+    public static final String MULTI = "MULTI";
 }

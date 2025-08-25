@@ -149,4 +149,10 @@ public class CommandHandler {
         }
         RespParser.writeIntegerString(value, outputStream);
     }
+
+    public void handleMulti(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        System.out.println("Current thread: " + Thread.currentThread());
+        storage.multi();
+        RespParser.writeSimpleString(ResponseConstants.OK, outputStream);
+    }
 }

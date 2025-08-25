@@ -58,6 +58,9 @@ public class CommandProcessor {
             case CommandConstants.INCR:
                 commandHandler.handleIncr(outputStream, commandWithArgs);
                 break;
+            case CommandConstants.MULTI:
+                commandHandler.handleMulti(outputStream, commandWithArgs);
+                break;
         }
     }
 }
