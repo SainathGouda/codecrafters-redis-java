@@ -9,7 +9,7 @@ public class Storage {
     private final ConcurrentHashMap<String, Long> expiry = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, List<String>> listValue = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, StreamCache> streamMap = new ConcurrentHashMap<>();
-    private final static ConcurrentHashMap<Thread, List<String[]>> transactionMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Thread, List<String[]>> transactionMap = new ConcurrentHashMap<>();
     private static String xAddIdTop = "0-0";
 
     public void setData(String key, String value, long ttl) {
@@ -167,7 +167,7 @@ public class Storage {
     }
 
     public boolean multiExist(){
-        System.out.println("Inside exist"+transactionMap.keySet());
+        System.out.println("Inside exist"+Thread.currentThread());
         return transactionMap.containsKey(Thread.currentThread());
     }
 }
