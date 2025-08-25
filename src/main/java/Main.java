@@ -39,10 +39,8 @@ public class Main {
             serverSocket = new ServerSocket(port);
             serverSocket.setReuseAddress(true);
             if (!masterAddress.isEmpty()) {
-                ReplicationHandler replicationHandler = new ReplicationHandler();
-                replicationHandler.completeHandshakeStepOne(masterAddress);
-                replicationHandler.completeHandshakeStepTwo(masterAddress);
-                replicationHandler.completeHandshakeStepThree(masterAddress);
+                ReplicationHandler replicationHandler = new ReplicationHandler(masterAddress);
+                replicationHandler.completeHandShake();
             }
 
             while (true) {
