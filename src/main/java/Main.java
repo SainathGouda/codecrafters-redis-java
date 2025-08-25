@@ -3,6 +3,7 @@ import command.CommandHandler;
 import command.CommandProcessor;
 import constant.CommandConstants;
 import data.Storage;
+import replication.ReplicationHandler;
 import util.RespParser;
 
 import java.io.*;
@@ -38,16 +39,10 @@ public class Main {
             serverSocket = new ServerSocket(port);
             serverSocket.setReuseAddress(true);
             if (!masterAddress.isEmpty()) {
-                String[] masterAddressInfo = masterAddress.split(" ");
-                String hostAddress = masterAddressInfo[0];
-                int portAddress = Integer.parseInt(masterAddressInfo[1]);
-                Socket slave = new Socket(hostAddress, portAddress);
-//                slave.getOutputStream().write("*1\r\n$4\r\nPING\r\n".getBytes());
-                ArrayList<String> handshakeMessages = new ArrayList<>();
-                handshakeMessages.add(CommandConstants.PING);
-                RespParser.writeArray(handshakeMessages.size(), handshakeMessages, slave.getOutputStream());
-                slave.getOutputStream().flush();
-                slave.close();
+                ReplicationHandler replicationHandler = new ReplicationHandler();
+                replicationHandler.completeHandshakeStepOne(masterAddress);
+                replicationHandler.completeHandshakeStepTwo(masterAddress);
+                replicationHandler.completeHandshakeStepThree(masterAddress);
             }
 
             while (true) {
@@ -57,6 +52,8 @@ public class Main {
             }
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         } finally {
             try {
                 if (clientSocket != null) {
