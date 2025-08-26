@@ -42,6 +42,7 @@ public class ReplicationHandler {
     }
 
     public synchronized void completeHandshakeStepTwo() throws Exception {
+        System.out.println("Second handshake");
         slave.getOutputStream().write("*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();
@@ -52,6 +53,7 @@ public class ReplicationHandler {
     }
 
     public synchronized void completeHandshakeStepThree() throws Exception {
+        System.out.println("Third handshake");
         slave.getOutputStream().write("*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();
