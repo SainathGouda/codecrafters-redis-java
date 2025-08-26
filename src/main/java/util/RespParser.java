@@ -6,6 +6,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
@@ -67,7 +68,7 @@ public class RespParser {
     }
 
     public static void writeRDBFile(byte[] dbFile, BufferedWriter outputStream) throws IOException {
-        String myString = new String(dbFile, "UTF-8");
+        String myString = new String(dbFile, StandardCharsets.UTF_8);
         System.out.println(dbFile.length);
         System.out.println(myString);
         outputStream.write(RESPConstants.BULK_STRING_PREFIX+dbFile.length+RESPConstants.CRLF);
