@@ -2,12 +2,14 @@ package data;
 
 import command.CommandParser;
 
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Storage {
     private final static ConcurrentHashMap<String, String> config = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<String, Socket> socketConfig = new ConcurrentHashMap<>();
     private final static ConcurrentHashMap<String, String> setValue = new ConcurrentHashMap<>();
     private final static ConcurrentHashMap<String, Long> expiry = new ConcurrentHashMap<>();
     private final static ConcurrentHashMap<String, List<String>> listValue = new ConcurrentHashMap<>();
@@ -44,6 +46,14 @@ public class Storage {
 
     public String getMasterReplOffset() {
         return config.get("master_repl_offset");
+    }
+
+    public void setClientSocket(Socket clientSocket){
+        socketConfig.put("clientSocket", clientSocket);
+    }
+
+    public Socket getClientSocket() {
+        return socketConfig.get("clientSocket");
     }
 
     public void setData(String key, String value, long ttl) {

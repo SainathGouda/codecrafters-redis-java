@@ -43,6 +43,7 @@ public class Main {
             while (true) {
                 // Wait for connection from client.
                 clientSocket = serverSocket.accept();
+                storage.setClientSocket(clientSocket);
                 new Thread(new ClientHandler(clientSocket, new CommandProcessor(new CommandHandler(storage), storage))).start();
             }
         } catch (IOException e) {

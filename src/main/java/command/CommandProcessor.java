@@ -7,11 +7,10 @@ import util.RespParser;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 
 public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
 
-    public void processCommand(BufferedWriter outputStream, OutputStream clientOutputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+    public void processCommand(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         String commandName = commandWithArgs.getCommand();
 
         if (!commandName.equals(CommandConstants.EXEC) && !commandName.equals(CommandConstants.DISCARD) && storage.multiExist()) {
@@ -82,7 +81,7 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
                 commandHandler.handleReplConf(outputStream);
                 break;
             case CommandConstants.PSYNC:
-                commandHandler.handlePsync(clientOutputStream);
+                commandHandler.handlePsync();
                 break;
         }
     }
