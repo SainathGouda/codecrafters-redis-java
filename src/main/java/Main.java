@@ -40,9 +40,7 @@ public class Main {
             serverSocket.setReuseAddress(true);
             if (!masterAddress.isEmpty()) {
                 ReplicationHandler replicationHandler = new ReplicationHandler(masterAddress);
-                replicationHandler.completeHandshakeStepOne();
-                replicationHandler.completeHandshakeStepTwo();
-                replicationHandler.completeHandshakeStepThree();
+                replicationHandler.completeHandShake();
             }
 
             while (true) {
