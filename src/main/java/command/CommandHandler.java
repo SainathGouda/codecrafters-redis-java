@@ -191,4 +191,9 @@ public class CommandHandler {
     public void handleReplConf(BufferedWriter outputStream) throws IOException {
         RespParser.writeSimpleString(ResponseConstants.OK, outputStream);
     }
+
+    public void handlePsync(BufferedWriter outputStream) throws IOException {
+        String response = ResponseConstants.FULLRESYNC+" "+storage.getMasterReplId();
+        RespParser.writeSimpleString(response, outputStream);
+    }
 }

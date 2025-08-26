@@ -80,6 +80,9 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
             case CommandConstants.REPLCONF:
                 commandHandler.handleReplConf(outputStream);
                 break;
+            case CommandConstants.PSYNC:
+                commandHandler.handlePsync(outputStream);
+                break;
         }
     }
 }

@@ -4,6 +4,7 @@ public class ResponseConstants {
     public static final String PONG = "PONG";
     public static final String OK = "OK";
     public static final String QUEUED = "QUEUED";
+    public static final String FULLRESYNC = "FULLRESYNC";
     public static final String ERROR = "ERR wrong number of arguments";
     public static final String INVALID_STREAM = "ERR Missing or invalid streams argument";
     public static final String MISMATCH_STREAM = "ERR Mismatched number of streams and IDs";
