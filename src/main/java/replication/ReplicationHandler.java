@@ -36,7 +36,7 @@ public class ReplicationHandler {
         slave.getOutputStream().flush();
         String response = reader.readLine();
         System.out.println(response);
-        if (!response.equalsIgnoreCase("+PONG\r\n")) {
+        if (!response.equalsIgnoreCase("+PONG")) {
             throw new Exception("Handshake stage one failed.");
         }
     }
