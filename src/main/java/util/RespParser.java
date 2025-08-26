@@ -67,9 +67,10 @@ public class RespParser {
     }
 
     public static void writeRDBFile(byte[] dbFile, BufferedWriter outputStream) throws IOException {
+        String myString = new String(dbFile, "UTF-8");
         System.out.println(dbFile.length);
-        System.out.println(dbFile.toString());
+        System.out.println(myString);
         outputStream.write(RESPConstants.BULK_STRING_PREFIX+dbFile.length+RESPConstants.CRLF);
-        outputStream.write(dbFile.toString());
+        outputStream.write(myString);
     }
 }
