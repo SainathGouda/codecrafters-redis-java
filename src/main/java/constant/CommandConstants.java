@@ -28,4 +28,5 @@ public class CommandConstants {
 
     //Replications
     public static final String INFO = "INFO";
+    public static final String REPLCONF = "REPLCONF";
 }

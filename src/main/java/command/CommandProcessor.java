@@ -31,6 +31,7 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
             case CommandConstants.GET:
                 commandHandler.handleGet(outputStream, commandWithArgs);
                 break;
+            //Lists
             case CommandConstants.RPUSH:
                 commandHandler.handleRPush(outputStream, commandWithArgs);
                 break;
@@ -46,6 +47,7 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
             case CommandConstants.LPOP:
                 commandHandler.handleLPop(outputStream, commandWithArgs);
                 break;
+            //Streams
             case CommandConstants.TYPE:
                 commandHandler.handleType(outputStream, commandWithArgs);
                 break;
@@ -58,6 +60,7 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
             case CommandConstants.XREAD:
                 commandHandler.handleXRead(outputStream, commandWithArgs);
                 break;
+            //Transactions
             case CommandConstants.INCR:
                 commandHandler.handleIncr(outputStream, commandWithArgs);
                 break;
@@ -70,8 +73,12 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
             case CommandConstants.DISCARD:
                 commandHandler.handleDiscard(outputStream);
                 break;
+            //Replications
             case CommandConstants.INFO:
                 commandHandler.handleInfo(outputStream);
+                break;
+            case CommandConstants.REPLCONF:
+                commandHandler.handleReplConf(outputStream);
                 break;
         }
     }

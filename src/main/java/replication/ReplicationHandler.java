@@ -30,9 +30,6 @@ public class ReplicationHandler {
     }
 
     public synchronized void completeFirstHandshakeStepOne() throws Exception {
-//        ArrayList<String> handshakeMessages = new ArrayList<>();
-//        handshakeMessages.add(CommandConstants.PING);
-//        RespParser.writeArray(handshakeMessages.size(), handshakeMessages, slave.getOutputStream());
         slave.getOutputStream().write("*1\r\n$4\r\nPING\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();
@@ -42,7 +39,6 @@ public class ReplicationHandler {
     }
 
     public synchronized void completeSecondHandshakeStepOne() throws Exception {
-        System.out.println("Second handshake");
         slave.getOutputStream().write("*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();
@@ -52,7 +48,6 @@ public class ReplicationHandler {
     }
 
     public synchronized void completeSecondHandshakeStepTwo() throws Exception {
-        System.out.println("Third handshake");
         slave.getOutputStream().write("*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();
@@ -62,7 +57,6 @@ public class ReplicationHandler {
     }
 
     public synchronized void completeThirdHandshake() throws Exception {
-        System.out.println("Fourth handshake");
         slave.getOutputStream().write("*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();

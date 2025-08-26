@@ -55,6 +55,7 @@ public class CommandHandler {
         }
     }
 
+    //Lists
     public void handleRPush(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         String key = commandWithArgs.getKey();
         List<String> values = commandWithArgs.getArgumentsWithoutKey();
@@ -107,6 +108,7 @@ public class CommandHandler {
         }
     }
 
+    //Streams
     public void handleType(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         String key = commandWithArgs.getKey();
         String dataType = storage.getStoredType(key);
@@ -139,6 +141,7 @@ public class CommandHandler {
         xReadValidation.isValid(commandWithArgs, storage, outputStream);
     }
 
+    //Transactions
     public void handleIncr(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         String key = commandWithArgs.getKey();
 
@@ -178,9 +181,14 @@ public class CommandHandler {
         }
     }
 
+    //Replications
     public void handleInfo(BufferedWriter outputStream) throws IOException {
         RespParser.writeBulkString("role:"+storage.getRole()
                 +"master_replid:"+storage.getMasterReplId()
                 +"master_repl_offset:"+storage.getMasterReplOffset(), outputStream);
+    }
+
+    public void handleReplConf(BufferedWriter outputStream) throws IOException {
+        RespParser.writeSimpleString(ResponseConstants.OK, outputStream);
     }
 }
