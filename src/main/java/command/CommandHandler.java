@@ -193,7 +193,7 @@ public class CommandHandler {
     }
 
     public void handlePsync(BufferedWriter outputStream) throws IOException {
-        String response = ResponseConstants.FULLRESYNC+" "+storage.getMasterReplId();
+        String response = ResponseConstants.FULLRESYNC+" "+storage.getMasterReplId()+" "+storage.getMasterReplOffset();
         RespParser.writeSimpleString(response, outputStream);
     }
 }
