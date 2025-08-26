@@ -9,6 +9,8 @@ import util.XReadValidation;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HexFormat;
 import java.util.List;
 
 public class CommandHandler {
@@ -195,5 +197,8 @@ public class CommandHandler {
     public void handlePsync(BufferedWriter outputStream) throws IOException {
         String response = ResponseConstants.FULLRESYNC+" "+storage.getMasterReplId()+" "+storage.getMasterReplOffset();
         RespParser.writeSimpleString(response, outputStream);
+        //Dummy redisDB file
+        byte[] contents = HexFormat.of().parseHex("524544495330303131fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fa056374696d65c26d08bc65fa08757365642d6d656dc2b0c41000fa08616f662d62617365c000fff06e3bfec0ff5aa2");
+        RespParser.writeBulkString(Arrays.toString(contents), outputStream);
     }
 }
