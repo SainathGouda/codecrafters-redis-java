@@ -25,6 +25,7 @@ public class ReplicationHandler {
         completeFirstHandshakeStepOne();
         completeSecondHandshakeStepOne();
         completeSecondHandshakeStepTwo();
+        completeThirdHandshake();
         slave.close();
     }
 
