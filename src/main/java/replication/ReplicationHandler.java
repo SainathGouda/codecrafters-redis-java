@@ -42,21 +42,21 @@ public class ReplicationHandler {
     }
 
     public synchronized void completeHandshakeStepTwo() throws Exception {
-        slave.getOutputStream().write("*3\\r\\n$8\\r\\nREPLCONF\\r\\n$14\\r\\nlistening-port\\r\\n$4\\r\\n6380\\r\\n".getBytes());
+        slave.getOutputStream().write("*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();
         System.out.println(response);
-        if (!response.equalsIgnoreCase("+OK\r\n")) {
+        if (!response.equalsIgnoreCase("+OK")) {
             throw new Exception("Handshake stage two failed.");
         }
     }
 
     public synchronized void completeHandshakeStepThree() throws Exception {
-        slave.getOutputStream().write("*3\\r\\n$8\\r\\nREPLCONF\\r\\n$4\\r\\ncapa\\r\\n$6\\r\\npsync2\\r\\n".getBytes());
+        slave.getOutputStream().write("*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();
         System.out.println(response);
-        if (!response.equalsIgnoreCase("+OK\r\n")) {
+        if (!response.equalsIgnoreCase("+OK")) {
             throw new Exception("Handshake stage three failed.");
         }
     }
