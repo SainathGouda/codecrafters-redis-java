@@ -22,13 +22,13 @@ public class ReplicationHandler {
     }
 
     public void completeHandShake() throws Exception {
-        completeHandshakeStepOne();
-        completeHandshakeStepTwo();
-        completeHandshakeStepThree();
+        completeFirstHandshakeStepOne();
+        completeSecondHandshakeStepOne();
+        completeSecondHandshakeStepTwo();
         slave.close();
     }
 
-    public synchronized void completeHandshakeStepOne() throws Exception {
+    public synchronized void completeFirstHandshakeStepOne() throws Exception {
 //        ArrayList<String> handshakeMessages = new ArrayList<>();
 //        handshakeMessages.add(CommandConstants.PING);
 //        RespParser.writeArray(handshakeMessages.size(), handshakeMessages, slave.getOutputStream());
@@ -36,27 +36,37 @@ public class ReplicationHandler {
         slave.getOutputStream().flush();
         String response = reader.readLine();
         if (response==null || !response.equalsIgnoreCase("+PONG")) {
-            throw new Exception("Handshake stage one failed.");
+            throw new Exception("First handshake failed.");
         }
     }
 
-    public synchronized void completeHandshakeStepTwo() throws Exception {
+    public synchronized void completeSecondHandshakeStepOne() throws Exception {
         System.out.println("Second handshake");
         slave.getOutputStream().write("*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();
         if (response==null || !response.equalsIgnoreCase("+OK")) {
-            throw new Exception("Handshake stage two failed.");
+            throw new Exception("Second handshake stage one failed.");
         }
     }
 
-    public synchronized void completeHandshakeStepThree() throws Exception {
+    public synchronized void completeSecondHandshakeStepTwo() throws Exception {
         System.out.println("Third handshake");
         slave.getOutputStream().write("*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();
         if (response==null || !response.equalsIgnoreCase("+OK")) {
-            throw new Exception("Handshake stage three failed.");
+            throw new Exception("Second handshake stage one failed.");
+        }
+    }
+
+    public synchronized void completeThirdHandshake() throws Exception {
+        System.out.println("Fourth handshake");
+        slave.getOutputStream().write("*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n".getBytes());
+        slave.getOutputStream().flush();
+        String response = reader.readLine();
+        if (response==null || !response.startsWith("+FULLRESYNC")) {
+            throw new Exception("Third handshake failed.");
         }
     }
 }
