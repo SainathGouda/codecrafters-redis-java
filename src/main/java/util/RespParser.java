@@ -2,6 +2,7 @@ package util;
 
 import constant.RESPConstants;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -65,10 +66,10 @@ public class RespParser {
         }
     }
 
-    public static void writeRDBFile(String dbFile, BufferedWriter outputStream) throws IOException {
-        System.out.println(RESPConstants.BULK_STRING_PREFIX+dbFile.length()+RESPConstants.CRLF);
-        System.out.println(dbFile);
-        outputStream.write(RESPConstants.BULK_STRING_PREFIX+dbFile.length()+RESPConstants.CRLF);
-        outputStream.write(dbFile);
+    public static void writeRDBFile(byte[] dbFile, BufferedWriter outputStream) throws IOException {
+        System.out.println(RESPConstants.BULK_STRING_PREFIX+dbFile.length+RESPConstants.CRLF);
+        System.out.println(dbFile.toString());
+        outputStream.write(RESPConstants.BULK_STRING_PREFIX+dbFile.length+RESPConstants.CRLF);
+        outputStream.write(dbFile.toString());
     }
 }
