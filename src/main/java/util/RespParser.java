@@ -16,6 +16,10 @@ public class RespParser {
         outputStream.write(RESPConstants.SIMPLE_STRING_PREFIX+message+RESPConstants.CRLF);
     }
 
+    public static void writeSimpleString(String message, OutputStream outputStream) throws IOException {
+        outputStream.write((RESPConstants.SIMPLE_STRING_PREFIX+message+RESPConstants.CRLF).getBytes());
+    }
+
     public static void writeErrorString(String error, BufferedWriter outputStream) throws IOException {
         outputStream.write(RESPConstants.ERROR_PREFIX+error+RESPConstants.CRLF);
     }

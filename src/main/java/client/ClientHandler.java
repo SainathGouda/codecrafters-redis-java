@@ -25,7 +25,7 @@ public class ClientHandler implements Runnable{
                 if(firstLine != null) {
                     CommandParser.RedisCommandParser redisCommandParser = new CommandParser.RedisCommandParser(inputStream);
                     CommandParser.CommandWithArgs commandWithArgs = redisCommandParser.parseCommand(firstLine);
-                    commandProcessor.processCommand(outputStream, commandWithArgs);
+                    commandProcessor.processCommand(outputStream, clientSocket.getOutputStream(), commandWithArgs);
                     //To send the data immediately instead of waiting to be filled
                     outputStream.flush();
                 }
