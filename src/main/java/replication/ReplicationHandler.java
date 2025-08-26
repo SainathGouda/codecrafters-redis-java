@@ -35,7 +35,7 @@ public class ReplicationHandler {
         slave.getOutputStream().write("*1\r\n$4\r\nPING\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();
-        if (response.isEmpty() || !response.equalsIgnoreCase("+PONG")) {
+        if (response==null || !response.equalsIgnoreCase("+PONG")) {
             throw new Exception("Handshake stage one failed.");
         }
     }
@@ -45,7 +45,7 @@ public class ReplicationHandler {
         slave.getOutputStream().write("*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();
-        if (response.isEmpty() || !response.equalsIgnoreCase("+OK")) {
+        if (response==null || !response.equalsIgnoreCase("+OK")) {
             throw new Exception("Handshake stage two failed.");
         }
     }
@@ -55,7 +55,7 @@ public class ReplicationHandler {
         slave.getOutputStream().write("*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();
-        if (response.isEmpty() || !response.equalsIgnoreCase("+OK")) {
+        if (response==null || !response.equalsIgnoreCase("+OK")) {
             throw new Exception("Handshake stage three failed.");
         }
     }
