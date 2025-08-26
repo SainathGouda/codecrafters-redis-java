@@ -66,6 +66,7 @@ public class RespParser {
     }
 
     public static void writeRDBFile(byte[] dbFile, BufferedWriter outputStream) throws IOException {
-        outputStream.write(RESPConstants.BULK_STRING_PREFIX+dbFile.length+RESPConstants.CRLF+Arrays.toString(dbFile));
+        outputStream.write(RESPConstants.BULK_STRING_PREFIX+dbFile.length+RESPConstants.CRLF);
+        outputStream.write(Arrays.toString(dbFile));
     }
 }
