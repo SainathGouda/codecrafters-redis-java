@@ -5,6 +5,7 @@ import constant.RESPConstants;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -51,7 +52,7 @@ public class RespParser {
         outputStream.write(RESPConstants.INTEGER_PREFIX+message+RESPConstants.CRLF);
     }
 
-    static void writeXEntries(BufferedWriter outputStream, TreeMap<String, List<String>> entries) throws IOException {
+    public static void writeXEntries(BufferedWriter outputStream, TreeMap<String, List<String>> entries) throws IOException {
         outputStream.write(RESPConstants.ARRAY_PREFIX+ entries.size()+RESPConstants.CRLF);
 
         for (var entry : entries.entrySet()) {
@@ -62,5 +63,9 @@ public class RespParser {
                 writeBulkString(value, outputStream);
             }
         }
+    }
+
+    public static void writeRDBFile(byte[] dbFile, BufferedWriter outputStream) throws IOException {
+        outputStream.write(RESPConstants.BULK_STRING_PREFIX+dbFile.length+RESPConstants.CRLF+Arrays.toString(dbFile));
     }
 }
