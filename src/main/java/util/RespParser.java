@@ -65,10 +65,10 @@ public class RespParser {
         }
     }
 
-    public static void writeRDBFile(byte[] dbFile, BufferedWriter outputStream) throws IOException {
-        System.out.println(RESPConstants.BULK_STRING_PREFIX+dbFile.length+RESPConstants.CRLF);
-        System.out.println(Arrays.toString(dbFile));
-        outputStream.write(RESPConstants.BULK_STRING_PREFIX+dbFile.length+RESPConstants.CRLF);
-        outputStream.write(Arrays.toString(dbFile));
+    public static void writeRDBFile(String dbFile, BufferedWriter outputStream) throws IOException {
+        System.out.println(RESPConstants.BULK_STRING_PREFIX+dbFile.length()+RESPConstants.CRLF);
+        System.out.println(dbFile);
+        outputStream.write(RESPConstants.BULK_STRING_PREFIX+dbFile.length()+RESPConstants.CRLF);
+        outputStream.write(dbFile);
     }
 }
