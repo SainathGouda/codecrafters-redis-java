@@ -60,6 +60,8 @@ public class ReplicationHandler {
         slave.getOutputStream().write("*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();
+        System.out.println(reader.readLine());
+        System.out.println(reader.readLine());
         if (response==null || !response.startsWith("+FULLRESYNC")) {
             throw new Exception("Third handshake failed.");
         }
