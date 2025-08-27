@@ -33,7 +33,6 @@ public class ReplicationHandler {
         completeSecondHandshakeStepOne();
         completeSecondHandshakeStepTwo();
         completeThirdHandshake();
-        slave.close();
     }
 
     public synchronized void completeFirstHandshakeStepOne() throws Exception {
@@ -67,11 +66,27 @@ public class ReplicationHandler {
         slave.getOutputStream().write("*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();
-        int dbFileLength = Integer.parseInt(reader.readLine().replace('$', '0'));
-        reader.skip(dbFileLength-1);
-        new Thread(new ClientHandler(slave, new CommandProcessor(new CommandHandler(storage), storage))).start();
         if (response==null || !response.startsWith("+FULLRESYNC")) {
             throw new Exception("Third handshake failed.");
+        }
+        int dbFileLength = Integer.parseInt(reader.readLine().replace('$', '0'));
+        reader.skip(dbFileLength-1);
+        try {
+            while (true) {
+                new Thread(new ClientHandler(slave, new CommandProcessor(new CommandHandler(storage), storage))).start();
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (slave != null) {
+                    slave.close();
+                }
+            } catch (IOException e) {
+                System.out.println("IOException: " + e.getMessage());
+            }
         }
     }
 }
