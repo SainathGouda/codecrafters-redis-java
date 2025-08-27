@@ -69,7 +69,7 @@ public class ReplicationHandler {
         String response = reader.readLine();
         int dbFileLength = Integer.parseInt(reader.readLine().replace('$', '0'));
         reader.skip(dbFileLength-1);
-        new ClientHandler(slave, new CommandProcessor(new CommandHandler(storage), storage));
+        new Thread(new ClientHandler(slave, new CommandProcessor(new CommandHandler(storage), storage))).start();
         if (response==null || !response.startsWith("+FULLRESYNC")) {
             throw new Exception("Third handshake failed.");
         }
