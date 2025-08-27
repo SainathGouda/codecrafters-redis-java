@@ -60,6 +60,8 @@ public class ReplicationHandler {
         slave.getOutputStream().write("*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();
+        int dbFileLength = Integer.parseInt(reader.readLine().replace('$', '0'));
+        reader.skip(dbFileLength);
         while (true){
             System.out.println(reader.readLine());
         }
