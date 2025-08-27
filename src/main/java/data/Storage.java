@@ -2,10 +2,12 @@ package data;
 
 import command.CommandParser;
 
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Storage {
     private final static ConcurrentHashMap<String, String> config = new ConcurrentHashMap<>();
@@ -15,6 +17,7 @@ public class Storage {
     private final static ConcurrentHashMap<String, List<String>> listValue = new ConcurrentHashMap<>();
     private final static ConcurrentHashMap<String, StreamCache> streamMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Thread, List<CommandParser.CommandWithArgs>> transactionMap = new ConcurrentHashMap<>();
+    public final static CopyOnWriteArrayList<OutputStream> slaveOutputStreams = new CopyOnWriteArrayList<>();
 
     public void setPort(int port) {
         config.put("port", String.valueOf(port));
@@ -54,6 +57,14 @@ public class Storage {
 
     public Socket getClientSocket() {
         return socketConfig.get("clientSocket");
+    }
+
+    public void setSlaveOutputStream(OutputStream outputStream){
+        slaveOutputStreams.add(outputStream);
+    }
+
+    public CopyOnWriteArrayList<OutputStream> getSlaveOutputStreams(){
+        return slaveOutputStreams;
     }
 
     public void setData(String key, String value, long ttl) {

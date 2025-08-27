@@ -2,12 +2,9 @@ package util;
 
 import constant.RESPConstants;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -30,6 +27,10 @@ public class RespParser {
         } else {
             outputStream.write(RESPConstants.BULK_STRING_PREFIX+message.length()+RESPConstants.CRLF+message+RESPConstants.CRLF);
         }
+    }
+
+    public static void writeBulkString(String message, OutputStream outputStream) throws IOException {
+        outputStream.write((RESPConstants.BULK_STRING_PREFIX+message.length()+RESPConstants.CRLF+message+RESPConstants.CRLF).getBytes());
     }
 
     public static void writeNullBulkString(BufferedWriter outputStream) throws IOException {
@@ -74,5 +75,11 @@ public class RespParser {
     public static void writeRDBFile(byte[] dbFile, OutputStream clientOutputStream) throws IOException {
         clientOutputStream.write((RESPConstants.BULK_STRING_PREFIX+dbFile.length+RESPConstants.CRLF).getBytes());
         clientOutputStream.write(dbFile);
+    }
+
+    public static void writeSETCommand(OutputStream outputStream, String key, String value) throws IOException {
+        outputStream.write(RESPConstants.SET.getBytes());
+        writeBulkString(key, outputStream);
+        writeBulkString(value, outputStream);
     }
 }
