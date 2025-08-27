@@ -45,9 +45,9 @@ public class CommandHandler {
             RespParser.writeErrorString(ResponseConstants.ERROR, outputStream);
         }
 
-        for (OutputStream slaveOutputStream : storage.getSlaveOutputStreams()) {
-            RespParser.writeSETCommand(slaveOutputStream, key, value);
-        }
+//        for (OutputStream slaveOutputStream : storage.getSlaveOutputStreams()) {
+//            RespParser.writeSETCommand(slaveOutputStream, key, value);
+//        }
     }
 
     public void handleGet(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
