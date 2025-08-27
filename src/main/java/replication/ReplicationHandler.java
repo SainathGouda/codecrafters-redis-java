@@ -1,5 +1,10 @@
 package replication;
 
+import client.ClientHandler;
+import command.CommandHandler;
+import command.CommandProcessor;
+import data.Storage;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,10 +66,12 @@ public class ReplicationHandler {
         slave.getOutputStream().flush();
         String response = reader.readLine();
         int dbFileLength = Integer.parseInt(reader.readLine().replace('$', '0'));
-        reader.skip(dbFileLength);
+        reader.skip(dbFileLength-1);
         while (true) {
             System.out.println(reader.readLine());
         }
+//        Storage storage = new Storage();
+//        new ClientHandler(slave, new CommandProcessor(new CommandHandler(storage), storage));
 //        if (response==null || !response.startsWith("+FULLRESYNC")) {
 //            throw new Exception("Third handshake failed.");
 //        }
