@@ -16,6 +16,7 @@ public class ReplicationHandler {
     Socket slave;
     InputStream inputStream;
     BufferedReader reader;
+    Storage storage;
 
     public ReplicationHandler(String masterAddress) throws IOException {
         String[] masterAddressInfo = masterAddress.split(" ");
@@ -24,6 +25,7 @@ public class ReplicationHandler {
         this.slave = new Socket(hostAddress, portAddress);
         this.inputStream = slave.getInputStream();
         this.reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        this.storage = new Storage();
     }
 
     public void completeHandShake() throws Exception {
@@ -67,13 +69,9 @@ public class ReplicationHandler {
         String response = reader.readLine();
         int dbFileLength = Integer.parseInt(reader.readLine().replace('$', '0'));
         reader.skip(dbFileLength-1);
-        while (true) {
-            System.out.println(reader.readLine());
+        new ClientHandler(slave, new CommandProcessor(new CommandHandler(storage), storage));
+        if (response==null || !response.startsWith("+FULLRESYNC")) {
+            throw new Exception("Third handshake failed.");
         }
-//        Storage storage = new Storage();
-//        new ClientHandler(slave, new CommandProcessor(new CommandHandler(storage), storage));
-//        if (response==null || !response.startsWith("+FULLRESYNC")) {
-//            throw new Exception("Third handshake failed.");
-//        }
     }
 }
