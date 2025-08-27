@@ -63,6 +63,7 @@ public class ReplicationHandler {
         int dbFileLength = Integer.parseInt(reader.readLine().replace('$', '0'));
         reader.skip(dbFileLength);
         String command = String.valueOf(reader.read());
+        System.out.println("Command: " + command);
         if (response==null || !response.startsWith("+FULLRESYNC")) {
             throw new Exception("Third handshake failed.");
         }
