@@ -19,11 +19,12 @@ public class KeysValidation {
     }
 
     public void handleKeysCommand() throws IOException {
-        // Get the directory and dbfilename from config
+        // Get the directory and dbFileName from config
         String dir = storage.getRdbFileConfig("dir");
-        String dbfilename = storage.getRdbFileConfig("dbfilename");
+        String dbFileName = storage.getRdbFileConfig("db_file_name");
+        System.out.println("dbFileName : " + dbFileName);
 
-        Path dbPath = Path.of(dir, dbfilename);
+        Path dbPath = Path.of(dir, dbFileName);
         File dbfile = new File(dbPath.toString());
 
         if (!dbfile.exists()) {
