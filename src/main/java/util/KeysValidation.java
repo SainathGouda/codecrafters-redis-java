@@ -8,13 +8,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 public class KeysValidation {
-    InputStream inputStream;
     BufferedWriter outputStream;
     Storage storage;
 
     public KeysValidation(Storage storage, BufferedWriter outputStream) throws IOException {
         this.storage = storage;
-        this.inputStream = storage.getClientSocket().getInputStream();
         this.outputStream = outputStream;
     }
 
@@ -37,14 +35,14 @@ public class KeysValidation {
             int read;
             while ((read = fileInputStream.read()) != -1) {
                 if (read == 0xFB) { // Start of database section
-                    getLen(); // Skip hash table size info
-                    getLen(); // Skip expires size info
+                    getLen(fileInputStream); // Skip hash table size info
+                    getLen(fileInputStream); // Skip expires size info
                     break;
                 }
             }
 
             int type = fileInputStream.read(); // Read the type (should be a valid type byte)
-            int len = getLen(); // Get the key length
+            int len = getLen(fileInputStream); // Get the key length
             byte[] key_bytes = new byte[len];
             fileInputStream.read(key_bytes); // Read the key bytes
             String parsed_key = new String(key_bytes, StandardCharsets.UTF_8);
@@ -58,19 +56,19 @@ public class KeysValidation {
         }
     }
 
-    private int getLen() throws IOException {
-        int read = inputStream.read();
+    private int getLen(InputStream fileInputStream) throws IOException {
+        int read = fileInputStream.read();
         int len_encoding_bit = (read & 0b11000000) >> 6;
         int len = 0;
 
         if (len_encoding_bit == 0) {
             len = read & 0b00111111;
         } else if (len_encoding_bit == 1) {
-            int extra_len = inputStream.read();
+            int extra_len = fileInputStream.read();
             len = ((read & 0b00111111) << 8) + extra_len;
         } else if (len_encoding_bit == 2) {
             byte[] extra_len = new byte[4];
-            inputStream.read(extra_len);
+            fileInputStream.read(extra_len);
             len = ByteBuffer.wrap(extra_len).getInt();
         }
         return len;
