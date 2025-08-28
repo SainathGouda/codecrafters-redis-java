@@ -90,6 +90,10 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
             case CommandConstants.KEYS:
                 commandHandler.handleKeys(outputStream);
                 break;
+            //Sorted Sets
+            case CommandConstants.ZADD:
+                commandHandler.handleZAdd(outputStream, commandWithArgs);
+                break;
         }
     }
 }

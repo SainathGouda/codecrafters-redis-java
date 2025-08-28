@@ -225,11 +225,20 @@ public class CommandHandler {
     }
 
     public void handleKeys(BufferedWriter outputStream) throws IOException {
-//        RdbFileConfig keysValidation = new RdbFileConfig(storage);
-//        keysValidation.handleKeysCommand(outputStream);
         RespParser.writeArrayLength(storage.getValueSize(), outputStream);
         for (String key : storage.getValueKeySet().keySet()) {
             RespParser.writeBulkString(key, outputStream);
         }
+    }
+
+    //Sorted Sets
+    public void handleZAdd(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String zSetKey = commandWithArgs.getKey();
+        List<String> arguments = commandWithArgs.getArgumentsWithoutKey();
+        double zSetScore = Double.parseDouble(arguments.get(0));
+        String zSetMember = arguments.get(1);
+
+        storage.addMember(zSetKey, zSetMember, zSetScore);
+        RespParser.writeIntegerString(1, outputStream);
     }
 }

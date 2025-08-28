@@ -34,4 +34,7 @@ public class CommandConstants {
     //Persistence
     public static final String CONFIG = "CONFIG";
     public static final String KEYS = "KEYS";
+
+    //Sorted Sets
+    public static final String ZADD = "ZADD";
 }

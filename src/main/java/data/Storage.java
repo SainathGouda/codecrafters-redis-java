@@ -6,8 +6,24 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+class SortedSet {
+    String member;
+    double score;
+
+    public SortedSet(String member, double score) {
+        this.member = member;
+        this.score = score;
+    }
+
+    @Override
+    public String toString() {
+        return "SortedSet{" + "member='" + member + '\'' + ", score=" + score + '}';
+    }
+}
 
 public class Storage {
     private final static ConcurrentHashMap<String, String> config = new ConcurrentHashMap<>();
@@ -18,6 +34,7 @@ public class Storage {
     private final static ConcurrentHashMap<String, StreamCache> streamMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Thread, List<CommandParser.CommandWithArgs>> transactionMap = new ConcurrentHashMap<>();
     public final static CopyOnWriteArrayList<OutputStream> slaveOutputStreams = new CopyOnWriteArrayList<>();
+    private final static TreeMap<String, List<SortedSet>> zSet = new TreeMap<>();
 
     public void setPort(int port) {
         config.put("port", String.valueOf(port));
@@ -236,5 +253,13 @@ public class Storage {
 
     public void discardTransactions(){
         transactionMap.remove(Thread.currentThread());
+    }
+
+    //Sorted Sets
+    public void addMember(String key, String member, double score){
+        SortedSet set = new SortedSet(member, score);
+        List<SortedSet> sets = zSet.getOrDefault(key, new ArrayList<>());
+        sets.add(set);
+        zSet.put(key, sets);
     }
 }
