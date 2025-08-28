@@ -101,8 +101,8 @@ public class Storage {
 
     public int getValueSize(){ return setValue.size(); }
 
-    public ConcurrentHashMap.KeySetView<String, String> getValueKeySet() {
-        return setValue.keySet();
+    public ConcurrentHashMap<String, String> getValueKeySet() {
+        return setValue;
     }
 
     public List<String> getList(String key) {

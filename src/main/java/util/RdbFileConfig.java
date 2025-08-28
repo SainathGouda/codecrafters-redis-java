@@ -90,6 +90,7 @@ public class RdbFileConfig {
                 fileInputStream.read(valueBytes);
                 String parsedValue = new String(valueBytes, StandardCharsets.UTF_8);
 
+                System.out.println("Key: "+parsedKey+" Value: "+parsedValue);
                 long ttl = -1;
                 storage.setData(parsedKey, parsedValue, ttl);
             }
