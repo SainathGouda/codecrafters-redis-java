@@ -72,7 +72,9 @@ public class RdbFileConfig {
                     getLen(fileInputStream); // Skip expires size info
                     break;
                 }
+            }
 
+            while ((read = fileInputStream.read()) != -1) {
                 int type = fileInputStream.read(); // Read the type (should be a valid type byte)
                 int keyLen = getLen(fileInputStream); // Get the key length
                 byte[] keyBytes = new byte[keyLen];
