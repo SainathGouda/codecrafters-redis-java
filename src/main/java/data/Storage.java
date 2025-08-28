@@ -99,6 +99,12 @@ public class Storage {
         return setValue.get(key);
     }
 
+    public int getValueSize(){ return setValue.size(); }
+
+    public ConcurrentHashMap.KeySetView<String, String> getValueKeySet() {
+        return setValue.keySet();
+    }
+
     public List<String> getList(String key) {
         return listValue.get(key);
     }
