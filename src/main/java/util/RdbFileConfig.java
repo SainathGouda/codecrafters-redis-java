@@ -1,59 +1,18 @@
 package util;
 
-import constant.ResponseConstants;
 import data.Storage;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RdbFileConfig {
     Storage storage;
 
     public RdbFileConfig(Storage storage) throws IOException {
         this.storage = storage;
-    }
-
-    public void handleKeysCommand(BufferedWriter outputStream) throws IOException {
-        // Get the directory and dbFileName from config
-        String dir = storage.getRdbFileConfig("dir");
-        String dbFileName = storage.getRdbFileConfig("db_file_name");
-
-        Path dbPath = Path.of(dir, dbFileName);
-        File dbfile = new File(dbPath.toString());
-
-        if (!dbfile.exists()) {
-            RespParser.writeErrorString(ResponseConstants.NO_SUCH_FILE, outputStream);
-            return;
-        }
-
-        try (InputStream fileInputStream = new FileInputStream(dbfile)) {
-            int read;
-            while ((read = fileInputStream.read()) != -1) {
-                if (read == 0xFB) { // Start of database section
-                    getLen(fileInputStream); // Skip hash table size info
-                    getLen(fileInputStream); // Skip expires size info
-                    break;
-                }
-
-                int type = fileInputStream.read(); // Read the type (should be a valid type byte)
-                int keyLen = getLen(fileInputStream); // Get the key length
-                byte[] keyBytes = new byte[keyLen];
-                fileInputStream.read(keyBytes); // Read the key bytes
-                String parsedKey = new String(keyBytes, StandardCharsets.UTF_8);
-
-                List<String> keys = new ArrayList<>();
-                keys.add(parsedKey);
-
-                // Respond with the key in the format expected by Redis
-                RespParser.writeArray(keys.size(), keys, outputStream);
-            }
-        } catch (IOException e) {
-            RespParser.writeErrorString(ResponseConstants.CANNOT_READ_DB_FILE, outputStream);
-        }
     }
 
     public void loadDbFile() throws IOException {
@@ -80,6 +39,17 @@ public class RdbFileConfig {
                     break;
                 }
 
+                long ttl = -1;
+                if (type == 0xFC) {
+                    ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES).order(ByteOrder.LITTLE_ENDIAN);
+                    buffer.put(fileInputStream.readNBytes(Long.BYTES));
+                    buffer.flip();
+                    ttl = buffer.getLong();
+
+                    // Read the next byte for the actual value type
+                    type = fileInputStream.read();
+                }
+
                 int keyLen = getLen(fileInputStream); // Get the key length
                 byte[] keyBytes = new byte[keyLen];
                 fileInputStream.read(keyBytes); // Read the key bytes
@@ -90,8 +60,6 @@ public class RdbFileConfig {
                 fileInputStream.read(valueBytes);
                 String parsedValue = new String(valueBytes, StandardCharsets.UTF_8);
 
-                System.out.println("Key: "+parsedKey+" Value: "+parsedValue);
-                long ttl = -1;
                 storage.setData(parsedKey, parsedValue, ttl);
             }
         } catch (IOException _) {

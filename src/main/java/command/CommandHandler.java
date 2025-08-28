@@ -229,7 +229,6 @@ public class CommandHandler {
 //        keysValidation.handleKeysCommand(outputStream);
         RespParser.writeArrayLength(storage.getValueSize(), outputStream);
         for (String key : storage.getValueKeySet().keySet()) {
-            System.out.println("Key: "+key);
             RespParser.writeBulkString(key, outputStream);
         }
     }
