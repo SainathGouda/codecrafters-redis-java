@@ -87,6 +87,9 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
             case CommandConstants.CONFIG:
                 commandHandler.handleConfig(outputStream, commandWithArgs);
                 break;
+            case CommandConstants.KEYS:
+                commandHandler.handleKeys(outputStream);
+                break;
         }
     }
 }

@@ -33,4 +33,5 @@ public class CommandConstants {
 
     //Persistence
     public static final String CONFIG = "CONFIG";
+    public static final String KEYS = "KEYS";
 }

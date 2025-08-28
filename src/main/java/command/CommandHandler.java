@@ -3,10 +3,7 @@ package command;
 import constant.CommandConstants;
 import constant.ResponseConstants;
 import data.Storage;
-import util.RespParser;
-import util.XAddValidation;
-import util.XRangeValidation;
-import util.XReadValidation;
+import util.*;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -225,5 +222,10 @@ public class CommandHandler {
             fileConfig.add(argValue);
             RespParser.writeArray(fileConfig.size(), fileConfig, outputStream);
         }
+    }
+
+    public void handleKeys(BufferedWriter outputStream) throws IOException {
+        KeysValidation keysValidation = new KeysValidation(storage, outputStream);
+        keysValidation.handleKeysCommand();
     }
 }
