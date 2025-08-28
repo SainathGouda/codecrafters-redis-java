@@ -10,16 +10,14 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KeysValidation {
-    BufferedWriter outputStream;
+public class RdbFileConfig {
     Storage storage;
 
-    public KeysValidation(Storage storage, BufferedWriter outputStream) throws IOException {
+    public RdbFileConfig(Storage storage) throws IOException {
         this.storage = storage;
-        this.outputStream = outputStream;
     }
 
-    public void handleKeysCommand() throws IOException {
+    public void handleKeysCommand(BufferedWriter outputStream) throws IOException {
         // Get the directory and dbFileName from config
         String dir = storage.getRdbFileConfig("dir");
         String dbFileName = storage.getRdbFileConfig("db_file_name");
@@ -48,6 +46,40 @@ public class KeysValidation {
             fileInputStream.read(keyBytes); // Read the key bytes
             String parsedKey = new String(keyBytes, StandardCharsets.UTF_8);
 
+            List<String> keys = new ArrayList<>();
+            keys.add(parsedKey);
+
+            // Respond with the key in the format expected by Redis
+            RespParser.writeArray(keys.size(), keys, outputStream);
+        } catch (IOException e) {
+            RespParser.writeErrorString(ResponseConstants.CANNOT_READ_DB_FILE, outputStream);
+        }
+    }
+
+    public void loadDbFile() throws IOException {
+        // Get the directory and dbFileName from config
+        String dir = storage.getRdbFileConfig("dir");
+        String dbFileName = storage.getRdbFileConfig("db_file_name");
+
+        Path dbPath = Path.of(dir, dbFileName);
+        File dbfile = new File(dbPath.toString());
+
+        try (InputStream fileInputStream = new FileInputStream(dbfile)) {
+            int read;
+            while ((read = fileInputStream.read()) != -1) {
+                if (read == 0xFB) { // Start of database section
+                    getLen(fileInputStream); // Skip hash table size info
+                    getLen(fileInputStream); // Skip expires size info
+                    break;
+                }
+            }
+
+            int type = fileInputStream.read(); // Read the type (should be a valid type byte)
+            int keyLen = getLen(fileInputStream); // Get the key length
+            byte[] keyBytes = new byte[keyLen];
+            fileInputStream.read(keyBytes); // Read the key bytes
+            String parsedKey = new String(keyBytes, StandardCharsets.UTF_8);
+
             int valueLen = getLen(fileInputStream);
             byte[] valueBytes = new byte[valueLen];
             fileInputStream.read(valueBytes);
@@ -58,11 +90,8 @@ public class KeysValidation {
 
             List<String> keys = new ArrayList<>();
             keys.add(parsedKey);
+        } catch (IOException _) {
 
-            // Respond with the key in the format expected by Redis
-            RespParser.writeArray(keys.size(), keys, outputStream);
-        } catch (IOException e) {
-            RespParser.writeErrorString(ResponseConstants.CANNOT_READ_DB_FILE, outputStream);
         }
     }
 

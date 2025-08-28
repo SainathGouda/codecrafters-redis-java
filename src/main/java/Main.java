@@ -3,6 +3,7 @@ import command.CommandHandler;
 import command.CommandProcessor;
 import data.Storage;
 import replication.ReplicationHandler;
+import util.RdbFileConfig;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -54,6 +55,8 @@ public class Main {
                 // Wait for connection from client.
                 clientSocket = serverSocket.accept();
                 storage.setClientSocket(clientSocket);
+                RdbFileConfig rdbFileConfig = new RdbFileConfig(storage);
+                rdbFileConfig.loadDbFile();
                 new Thread(new ClientHandler(clientSocket, new CommandProcessor(new CommandHandler(storage), storage))).start();
             }
         } catch (IOException e) {

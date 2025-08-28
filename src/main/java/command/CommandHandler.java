@@ -225,7 +225,7 @@ public class CommandHandler {
     }
 
     public void handleKeys(BufferedWriter outputStream) throws IOException {
-        KeysValidation keysValidation = new KeysValidation(storage, outputStream);
-        keysValidation.handleKeysCommand();
+        RdbFileConfig keysValidation = new RdbFileConfig(storage);
+        keysValidation.handleKeysCommand(outputStream);
     }
 }
