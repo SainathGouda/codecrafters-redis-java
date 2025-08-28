@@ -11,4 +11,6 @@ public class ResponseConstants {
     public static final String NUMBER_FORMAT_EXCEPTION="ERR value is not an integer or out of range";
     public static final String EXEC_WITHOUT_MULTI="ERR EXEC without MULTI";
     public static final String DISCARD_WITHOUT_MULTI="ERR DISCARD without MULTI";
+    public static final String NO_SUCH_FILE="ERR no such file";
+    public static final String CANNOT_READ_DB_FILE="ERR error reading database file";
 }

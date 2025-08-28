@@ -1,11 +1,15 @@
 package util;
 
+import constant.ResponseConstants;
 import data.Storage;
 
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class KeysValidation {
     BufferedWriter outputStream;
@@ -20,14 +24,12 @@ public class KeysValidation {
         // Get the directory and dbFileName from config
         String dir = storage.getRdbFileConfig("dir");
         String dbFileName = storage.getRdbFileConfig("db_file_name");
-        System.out.println("dir : " + dir);
-        System.out.println("dbFileName : " + dbFileName);
 
         Path dbPath = Path.of(dir, dbFileName);
         File dbfile = new File(dbPath.toString());
 
         if (!dbfile.exists()) {
-            outputStream.write("-ERR no such file\r\n");
+            RespParser.writeErrorString(ResponseConstants.NO_SUCH_FILE, outputStream);
             return;
         }
 
@@ -46,13 +48,13 @@ public class KeysValidation {
             byte[] key_bytes = new byte[len];
             fileInputStream.read(key_bytes); // Read the key bytes
             String parsed_key = new String(key_bytes, StandardCharsets.UTF_8);
+            List<String> keys = new ArrayList<>();
+            keys.add(parsed_key);
 
             // Respond with the key in the format expected by Redis
-            outputStream.write("*1\r\n$" + parsed_key.length() + "\r\n" + parsed_key + "\r\n");
-            outputStream.flush();
+            RespParser.writeArray(keys.size(), keys, outputStream);
         } catch (IOException e) {
-            System.out.println("Error reading RDB file: " + e.getMessage());
-            outputStream.write("-ERR error reading database file\r\n");
+            RespParser.writeErrorString(ResponseConstants.CANNOT_READ_DB_FILE, outputStream);
         }
     }
 
