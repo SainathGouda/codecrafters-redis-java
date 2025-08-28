@@ -75,7 +75,11 @@ public class RdbFileConfig {
             }
 
             while ((read = fileInputStream.read()) != -1) {
-                int type = fileInputStream.read(); // Read the type (should be a valid type byte)
+                int type = read; // Read the type (should be a valid type byte)
+                if (type == 0xFF) {
+                    break;
+                }
+
                 int keyLen = getLen(fileInputStream); // Get the key length
                 byte[] keyBytes = new byte[keyLen];
                 fileInputStream.read(keyBytes); // Read the key bytes
@@ -88,9 +92,6 @@ public class RdbFileConfig {
 
                 long ttl = -1;
                 storage.setData(parsedKey, parsedValue, ttl);
-
-                List<String> keys = new ArrayList<>();
-                keys.add(parsedKey);
             }
         } catch (IOException _) {
 

@@ -225,13 +225,11 @@ public class CommandHandler {
     }
 
     public void handleKeys(BufferedWriter outputStream) throws IOException {
-//        RdbFileConfig keysValidation = new RdbFileConfig(storage);
-//        keysValidation.handleKeysCommand(outputStream);
-//        outputStream.write("*" + rdbMap.size() + "\r\n");
-        RespParser.writeArrayLength(storage.getValueSize(), outputStream);
-        for (String key : storage.getValueKeySet()) {
-//            outputStream.write("$" + key.length() + "\r\n" + key + "\r\n");
-            RespParser.writeBulkString(key, outputStream);
-        }
+        RdbFileConfig keysValidation = new RdbFileConfig(storage);
+        keysValidation.handleKeysCommand(outputStream);
+//        RespParser.writeArrayLength(storage.getValueSize(), outputStream);
+//        for (String key : storage.getValueKeySet()) {
+//            RespParser.writeBulkString(key, outputStream);
+//        }
     }
 }
