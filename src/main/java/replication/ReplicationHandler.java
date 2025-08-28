@@ -1,8 +1,5 @@
 package replication;
 
-import client.ClientHandler;
-import command.CommandHandler;
-import command.CommandProcessor;
 import data.Storage;
 
 import java.io.BufferedReader;
@@ -29,13 +26,13 @@ public class ReplicationHandler {
     }
 
     public void completeHandShake() throws Exception {
-        completeFirstHandshakeStepOne();
+        completeFirstHandshake();
         completeSecondHandshakeStepOne();
         completeSecondHandshakeStepTwo();
         completeThirdHandshake();
     }
 
-    public synchronized void completeFirstHandshakeStepOne() throws Exception {
+    public synchronized void completeFirstHandshake() throws Exception {
         slave.getOutputStream().write("*1\r\n$4\r\nPING\r\n".getBytes());
         slave.getOutputStream().flush();
         String response = reader.readLine();
@@ -69,24 +66,24 @@ public class ReplicationHandler {
         if (response==null || !response.startsWith("+FULLRESYNC")) {
             throw new Exception("Third handshake failed.");
         }
-        int dbFileLength = Integer.parseInt(reader.readLine().replace('$', '0'));
-        reader.skip(dbFileLength-1);
-        try {
-            while (true) {
-                new Thread(new ClientHandler(slave, new CommandProcessor(new CommandHandler(storage), storage))).start();
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            try {
-                if (slave != null) {
-                    slave.close();
-                }
-            } catch (IOException e) {
-                System.out.println("IOException: " + e.getMessage());
-            }
-        }
+//        int dbFileLength = Integer.parseInt(reader.readLine().replace('$', '0'));
+//        reader.skip(dbFileLength-1);
+//        try {
+//            while (true) {
+//                new Thread(new ClientHandler(slave, new CommandProcessor(new CommandHandler(storage), storage))).start();
+//            }
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        finally {
+//            try {
+//                if (slave != null) {
+//                    slave.close();
+//                }
+//            } catch (IOException e) {
+//                System.out.println("IOException: " + e.getMessage());
+//            }
+//        }
     }
 }

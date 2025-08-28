@@ -1,5 +1,6 @@
 package command;
 
+import constant.CommandConstants;
 import constant.ResponseConstants;
 import data.Storage;
 import util.RespParser;
@@ -10,6 +11,7 @@ import util.XReadValidation;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.List;
 
@@ -209,5 +211,19 @@ public class CommandHandler {
 
         //Add the slave stream
         storage.setSlaveOutputStream(clientOutputStream);
+    }
+
+    //Persistence
+    public void handleConfig(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        List<String> arguments = commandWithArgs.arguments();
+        String configCommand = arguments.getFirst();
+        if(CommandConstants.GET.equalsIgnoreCase(configCommand)){
+            String arg = arguments.get(1);
+            String argValue = storage.getRdbFileConfig(arg);
+            List<String> fileConfig = new ArrayList<>();
+            fileConfig.add(arg);
+            fileConfig.add(argValue);
+            RespParser.writeArray(fileConfig.size(), fileConfig, outputStream);
+        }
     }
 }

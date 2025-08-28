@@ -51,6 +51,18 @@ public class Storage {
         return config.get("master_repl_offset");
     }
 
+    public void setDir(String dir){
+        config.put("dir", dir);
+    }
+
+    public void setDbFileName(String dbFileName){
+        config.put("db_file_name", dbFileName);
+    }
+
+    public String getRdbFileConfig(String arg) {
+        return config.get(arg);
+    }
+
     public void setClientSocket(Socket clientSocket){
         socketConfig.put("clientSocket", clientSocket);
     }

@@ -30,4 +30,7 @@ public class CommandConstants {
     public static final String INFO = "INFO";
     public static final String REPLCONF = "REPLCONF";
     public static final String PSYNC = "PSYNC";
+
+    //Persistence
+    public static final String CONFIG = "CONFIG";
 }
