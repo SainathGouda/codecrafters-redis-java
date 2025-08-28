@@ -8,7 +8,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class KeysValidation {
@@ -44,12 +43,21 @@ public class KeysValidation {
             }
 
             int type = fileInputStream.read(); // Read the type (should be a valid type byte)
-            int len = getLen(fileInputStream); // Get the key length
-            byte[] key_bytes = new byte[len];
-            fileInputStream.read(key_bytes); // Read the key bytes
-            String parsed_key = new String(key_bytes, StandardCharsets.UTF_8);
+            int keyLen = getLen(fileInputStream); // Get the key length
+            byte[] keyBytes = new byte[keyLen];
+            fileInputStream.read(keyBytes); // Read the key bytes
+            String parsedKey = new String(keyBytes, StandardCharsets.UTF_8);
+
+            int valueLen = getLen(fileInputStream);
+            byte[] valueBytes = new byte[valueLen];
+            fileInputStream.read(valueBytes);
+            String parsedValue = new String(valueBytes, StandardCharsets.UTF_8);
+
+            long ttl = -1;
+            storage.setData(parsedKey, parsedValue, ttl);
+
             List<String> keys = new ArrayList<>();
-            keys.add(parsed_key);
+            keys.add(parsedKey);
 
             // Respond with the key in the format expected by Redis
             RespParser.writeArray(keys.size(), keys, outputStream);
