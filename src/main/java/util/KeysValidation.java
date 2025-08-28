@@ -22,6 +22,7 @@ public class KeysValidation {
         // Get the directory and dbFileName from config
         String dir = storage.getRdbFileConfig("dir");
         String dbFileName = storage.getRdbFileConfig("db_file_name");
+        System.out.println("dir : " + dir);
         System.out.println("dbFileName : " + dbFileName);
 
         Path dbPath = Path.of(dir, dbFileName);
@@ -32,9 +33,9 @@ public class KeysValidation {
             return;
         }
 
-        try (InputStream inputStream = new FileInputStream(dbfile)) {
+        try (InputStream fileInputStream = new FileInputStream(dbfile)) {
             int read;
-            while ((read = inputStream.read()) != -1) {
+            while ((read = fileInputStream.read()) != -1) {
                 if (read == 0xFB) { // Start of database section
                     getLen(); // Skip hash table size info
                     getLen(); // Skip expires size info
@@ -42,10 +43,10 @@ public class KeysValidation {
                 }
             }
 
-            int type = inputStream.read(); // Read the type (should be a valid type byte)
+            int type = fileInputStream.read(); // Read the type (should be a valid type byte)
             int len = getLen(); // Get the key length
             byte[] key_bytes = new byte[len];
-            inputStream.read(key_bytes); // Read the key bytes
+            fileInputStream.read(key_bytes); // Read the key bytes
             String parsed_key = new String(key_bytes, StandardCharsets.UTF_8);
 
             // Respond with the key in the format expected by Redis
