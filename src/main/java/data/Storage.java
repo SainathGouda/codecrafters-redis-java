@@ -5,6 +5,7 @@ import command.CommandParser;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -283,7 +284,7 @@ public class Storage {
 
         sets.add(set);
         sets = sets.stream()
-                .sorted()
+                .sorted(Comparator.comparing(SortedSet::getMember))
                 .collect(Collectors.toList());
         zSet.put(key, sets);
 
