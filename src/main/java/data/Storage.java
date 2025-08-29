@@ -299,7 +299,6 @@ public class Storage {
 
         int rank = 0;
         for (SortedSet existingMember : sets) {
-            System.out.println(existingMember.getMember()+":"+existingMember.getScore()+":"+rank);
             if (existingMember.getMember().equals(member)) {
                 return rank;
             }

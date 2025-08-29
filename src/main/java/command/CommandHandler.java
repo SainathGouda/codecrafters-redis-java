@@ -248,6 +248,7 @@ public class CommandHandler {
         String zSetMember = arguments.get(0);
 
         int rank = storage.findMemberRanking(zSetKey, zSetMember);
-        RespParser.writeIntegerString(rank, outputStream);
+        if (rank == -1) { RespParser.writeNullBulkString(outputStream); }
+        else { RespParser.writeIntegerString(rank, outputStream); }
     }
 }
