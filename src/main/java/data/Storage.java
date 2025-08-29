@@ -283,9 +283,6 @@ public class Storage {
         }
 
         sets.add(set);
-        sets = sets.stream()
-                .sorted(Comparator.comparing(SortedSet::getMember))
-                .collect(Collectors.toList());
         zSet.put(key, sets);
 
         return wasAdded ? 1 : 0;
@@ -293,6 +290,9 @@ public class Storage {
 
     public int findMemberRanking(String key, String member){
         List<SortedSet> sets = zSet.getOrDefault(key, new ArrayList<>());
+        sets = sets.stream()
+                .sorted(Comparator.comparing(SortedSet::getScore))
+                .toList();
 
         int rank = 0;
         for (SortedSet existingMember : sets) {
