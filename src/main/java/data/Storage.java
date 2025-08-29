@@ -5,6 +5,7 @@ import command.CommandParser;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,6 +18,14 @@ class SortedSet {
     public SortedSet(String member, double score) {
         this.member = member;
         this.score = score;
+    }
+
+    public double getScore() {
+        return score;
+    }
+
+    public String getMember() {
+        return member;
     }
 
     @Override
@@ -256,10 +265,25 @@ public class Storage {
     }
 
     //Sorted Sets
-    public void addMember(String key, String member, double score){
+    public int addMember(String key, String member, double score){
+        boolean wasAdded = true;
         SortedSet set = new SortedSet(member, score);
+
         List<SortedSet> sets = zSet.getOrDefault(key, new ArrayList<>());
+
+        Iterator<SortedSet> iterator = sets.iterator();
+        while (iterator.hasNext()) {
+            SortedSet existingMember = iterator.next();
+            if (existingMember.getMember().equals(member)) {
+                iterator.remove();
+                wasAdded = false;
+                break;
+            }
+        }
+
         sets.add(set);
         zSet.put(key, sets);
+
+        return wasAdded ? 1 : 0;
     }
 }

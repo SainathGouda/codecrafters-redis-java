@@ -238,7 +238,7 @@ public class CommandHandler {
         double zSetScore = Double.parseDouble(arguments.get(0));
         String zSetMember = arguments.get(1);
 
-        storage.addMember(zSetKey, zSetMember, zSetScore);
-        RespParser.writeIntegerString(1, outputStream);
+        int wasAdded = storage.addMember(zSetKey, zSetMember, zSetScore);
+        RespParser.writeIntegerString(wasAdded, outputStream);
     }
 }
