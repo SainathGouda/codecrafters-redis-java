@@ -269,4 +269,14 @@ public class CommandHandler {
 
         RespParser.writeIntegerString(memberSetSize, outputStream);
     }
+
+    public void handleZScore(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String zSetKey = commandWithArgs.getKey();
+        List<String> arguments = commandWithArgs.getArgumentsWithoutKey();
+        String zSetMember = arguments.get(0);
+
+        String score = storage.getMemberScore(zSetKey, zSetMember);
+
+        RespParser.writeBulkString(score, outputStream);
+    }
 }

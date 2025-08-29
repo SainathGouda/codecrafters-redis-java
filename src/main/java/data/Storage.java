@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 class SortedSet {
     String member;
@@ -342,5 +341,16 @@ public class Storage {
 
     public int getMemberSetSize(String key){
         return zSet.getOrDefault(key, new ArrayList<>()).size();
+    }
+
+    public String getMemberScore(String key, String member){
+        List<SortedSet> sets = zSet.getOrDefault(key, new ArrayList<>());
+        for (SortedSet existingMember : sets) {
+            if (existingMember.getMember().equals(member)) {
+                return String.valueOf(existingMember.getScore());
+            }
+        }
+
+        return "-1";
     }
 }
