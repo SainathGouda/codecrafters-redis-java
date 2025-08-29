@@ -294,14 +294,16 @@ public class Storage {
     public int findMemberRanking(String key, String member){
         List<SortedSet> sets = zSet.getOrDefault(key, new ArrayList<>());
 
-        int rank = -1;
+        int rank = 0;
+        boolean found = false;
         for (SortedSet existingMember : sets) {
             rank++;
             if (existingMember.getMember().equals(member)) {
+                found = true;
                 break;
             }
         }
 
-        return rank;
+        return found ? rank : -1;
     }
 }
