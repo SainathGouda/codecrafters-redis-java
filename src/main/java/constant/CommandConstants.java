@@ -39,4 +39,5 @@ public class CommandConstants {
     public static final String ZADD = "ZADD";
     public static final String ZRANK = "ZRANK";
     public static final String ZRANGE = "ZRANGE";
+    public static final String ZCARD = "ZCARD";
 }

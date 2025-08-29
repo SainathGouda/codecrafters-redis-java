@@ -262,4 +262,11 @@ public class CommandHandler {
 
         RespParser.writeArray(rangedMembers.size(), rangedMembers, outputStream);
     }
+
+    public void handleZCard(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String zSetKey = commandWithArgs.getKey();
+        int memberSetSize = storage.getMemberSetSize(zSetKey);
+
+        RespParser.writeIntegerString(memberSetSize, outputStream);
+    }
 }

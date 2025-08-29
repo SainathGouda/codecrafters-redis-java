@@ -100,6 +100,9 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
             case CommandConstants.ZRANGE:
                 commandHandler.handleZRange(outputStream, commandWithArgs);
                 break;
+            case CommandConstants.ZCARD:
+                commandHandler.handleZCard(outputStream, commandWithArgs);
+                break;
         }
     }
 }

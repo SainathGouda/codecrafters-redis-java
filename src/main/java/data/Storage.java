@@ -339,4 +339,8 @@ public class Storage {
 
         return result;
     }
+
+    public int getMemberSetSize(String key){
+        return zSet.getOrDefault(key, new ArrayList<>()).size();
+    }
 }
