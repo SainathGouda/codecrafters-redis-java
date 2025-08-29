@@ -291,18 +291,10 @@ public class Storage {
     public int findMemberRanking(String key, String member){
         List<SortedSet> sets = zSet.getOrDefault(key, new ArrayList<>());
         sets = sets.stream()
-                .sorted(new Comparator<SortedSet>() {
-                    @Override
-                    public int compare(SortedSet o1, SortedSet o2) {
-                        double comp = Double.compare(o1.getScore(), o2.getScore());
-
-                        if (comp != 0) {
-                            return (int) comp;
-                        } else {
-                            return o1.getMember().compareTo(o2.getMember());
-                        }
-                    }
-                })
+                .sorted(Comparator.comparingDouble(SortedSet::getScore))
+                .toList();
+        sets = sets.stream()
+                .sorted(Comparator.comparing(SortedSet::getMember))
                 .toList();
 
         int rank = 0;
