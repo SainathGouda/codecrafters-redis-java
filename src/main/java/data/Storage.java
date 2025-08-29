@@ -298,7 +298,8 @@ public class Storage {
         int rank = 0;
         for (SortedSet existingMember : sets) {
             if (existingMember.getMember().equals(member)) {
-                return rank;
+//                return rank;
+                return sets.indexOf(existingMember);
             }
             rank++;
         }
@@ -352,5 +353,17 @@ public class Storage {
         }
 
         return "-1";
+    }
+
+    public int removeMember(String key, String member){
+        List<SortedSet> sets = zSet.getOrDefault(key, new ArrayList<>());
+        for (SortedSet existingMember : sets) {
+            if (existingMember.getMember().equals(member)) {
+                zSet.get(key).remove(existingMember);
+                return 1;
+            }
+        }
+
+        return 0;
     }
 }

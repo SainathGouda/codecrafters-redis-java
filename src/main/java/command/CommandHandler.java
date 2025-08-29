@@ -279,4 +279,14 @@ public class CommandHandler {
 
         RespParser.writeBulkString(score, outputStream);
     }
+
+    public void handleZRem(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String zSetKey = commandWithArgs.getKey();
+        List<String> arguments = commandWithArgs.getArgumentsWithoutKey();
+        String zSetMember = arguments.get(0);
+
+        int wasRemoved = storage.removeMember(zSetKey, zSetMember);
+
+        RespParser.writeIntegerString(wasRemoved, outputStream);
+    }
 }

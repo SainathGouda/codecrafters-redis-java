@@ -106,6 +106,9 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
             case CommandConstants.ZSCORE:
                 commandHandler.handleZScore(outputStream, commandWithArgs);
                 break;
+            case CommandConstants.ZREM:
+                commandHandler.handleZRem(outputStream, commandWithArgs);
+                break;
         }
     }
 }
