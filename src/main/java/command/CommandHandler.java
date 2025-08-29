@@ -1,6 +1,7 @@
 package command;
 
 import constant.CommandConstants;
+import constant.RESPConstants;
 import constant.ResponseConstants;
 import data.Storage;
 import util.*;
@@ -297,6 +298,11 @@ public class CommandHandler {
         double longitude = Double.parseDouble(arguments.get(0));
         double latitude = Double.parseDouble(arguments.get(1));
         String member = arguments.get(2);
+
+        if (longitude<-180 || longitude>180 || latitude < -85.05112878 || latitude > 85.05112878) {
+            RespParser.writeErrorString(ResponseConstants.COORDINATE_ERROR+longitude+latitude, outputStream);
+            return;
+        }
 
         int wasAdded = storage.addCoordinate(key, longitude, latitude, member);
         RespParser.writeIntegerString(wasAdded, outputStream);
