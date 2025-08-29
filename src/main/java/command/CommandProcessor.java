@@ -97,6 +97,9 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
             case CommandConstants.ZRANK:
                 commandHandler.handleZRank(outputStream, commandWithArgs);
                 break;
+            case CommandConstants.ZRANGE:
+                commandHandler.handleZRange(outputStream, commandWithArgs);
+                break;
         }
     }
 }

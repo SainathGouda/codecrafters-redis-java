@@ -251,4 +251,15 @@ public class CommandHandler {
         if (rank == -1) { RespParser.writeNullBulkString(outputStream); }
         else { RespParser.writeIntegerString(rank, outputStream); }
     }
+
+    public void handleZRange(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String zSetKey = commandWithArgs.getKey();
+        List<String> arguments = commandWithArgs.getArgumentsWithoutKey();
+        int startIndex = Integer.parseInt(arguments.get(0));
+        int endIndex = Integer.parseInt(arguments.get(1));
+
+        List<String> rangedMembers = storage.getRangedMembers(zSetKey, startIndex, endIndex);
+
+        RespParser.writeArray(rangedMembers.size(), rangedMembers, outputStream);
+    }
 }
