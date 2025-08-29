@@ -317,10 +317,14 @@ public class Storage {
 
         int size = sets.size();
 
-        if (startIndex < 0) startIndex += size;
-        if (endIndex < 0) endIndex += size;
+        if (startIndex < 0) {
+            startIndex = Math.max(0, startIndex + size);
+        }
+        if (endIndex < 0) {
+            endIndex += size;
+        }
 
-        if (startIndex < 0 || startIndex >= size || startIndex > endIndex) {
+        if (startIndex >= size || startIndex > endIndex) {
             return new ArrayList<>();
         }
 
