@@ -291,10 +291,8 @@ public class Storage {
     public int findMemberRanking(String key, String member){
         List<SortedSet> sets = zSet.getOrDefault(key, new ArrayList<>());
         sets = sets.stream()
-                .sorted(Comparator.comparingDouble(SortedSet::getScore))
-                .toList();
-        sets = sets.stream()
-                .sorted(Comparator.comparing(SortedSet::getMember))
+                .sorted(Comparator.comparingDouble(SortedSet::getScore)
+                        .thenComparing(SortedSet::getMember))
                 .toList();
 
         int rank = 0;
