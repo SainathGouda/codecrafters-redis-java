@@ -109,6 +109,10 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
             case CommandConstants.ZREM:
                 commandHandler.handleZRem(outputStream, commandWithArgs);
                 break;
+            //Geospatial
+            case CommandConstants.GEOADD:
+                commandHandler.handleGeoAdd(outputStream, commandWithArgs);
+                break;
         }
     }
 }

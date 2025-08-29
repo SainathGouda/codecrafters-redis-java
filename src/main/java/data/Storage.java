@@ -34,6 +34,36 @@ class SortedSet {
     }
 }
 
+class Coordinates {
+    String key;
+    double longitude;
+    double latitude;
+    String member;
+
+    public Coordinates(String key, double longitude, double latitude, String member) {
+        this.key = key;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.member = member;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public String getMember() {
+        return member;
+    }
+}
+
 public class Storage {
     private final static ConcurrentHashMap<String, String> config = new ConcurrentHashMap<>();
     private final static ConcurrentHashMap<String, Socket> socketConfig = new ConcurrentHashMap<>();
@@ -44,6 +74,7 @@ public class Storage {
     private final ConcurrentHashMap<Thread, List<CommandParser.CommandWithArgs>> transactionMap = new ConcurrentHashMap<>();
     public final static CopyOnWriteArrayList<OutputStream> slaveOutputStreams = new CopyOnWriteArrayList<>();
     private final static ConcurrentHashMap<String, List<SortedSet>> zSet = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<String, List<Coordinates>> coordinateSet = new ConcurrentHashMap<>();
 
     public void setPort(int port) {
         config.put("port", String.valueOf(port));
@@ -295,13 +326,10 @@ public class Storage {
                         .thenComparing(SortedSet::getMember))
                 .toList();
 
-        int rank = 0;
         for (SortedSet existingMember : sets) {
             if (existingMember.getMember().equals(member)) {
-//                return rank;
                 return sets.indexOf(existingMember);
             }
-            rank++;
         }
 
         return -1;
@@ -365,5 +393,28 @@ public class Storage {
         }
 
         return 0;
+    }
+
+    //Geospatial
+    public int addCoordinate(String key, double longitude, double latitude, String member){
+        boolean wasAdded = true;
+        Coordinates set = new Coordinates(member, longitude, latitude, member);
+
+        List<Coordinates> sets = coordinateSet.getOrDefault(key, new ArrayList<>());
+
+        Iterator<Coordinates> iterator = sets.iterator();
+        while (iterator.hasNext()) {
+            Coordinates existingMember = iterator.next();
+            if (existingMember.getMember().equals(member)) {
+                iterator.remove();
+                wasAdded = false;
+                break;
+            }
+        }
+
+        sets.add(set);
+        coordinateSet.put(key, sets);
+
+        return wasAdded ? 1 : 0;
     }
 }

@@ -42,4 +42,7 @@ public class CommandConstants {
     public static final String ZCARD = "ZCARD";
     public static final String ZSCORE = "ZSCORE";
     public static final String ZREM = "ZREM";
+
+    //Geospatial
+    public static final String GEOADD = "GEOADD";
 }

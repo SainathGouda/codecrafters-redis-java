@@ -289,4 +289,16 @@ public class CommandHandler {
 
         RespParser.writeIntegerString(wasRemoved, outputStream);
     }
+
+    //Geospatial
+    public void handleGeoAdd(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String key = commandWithArgs.getKey();
+        List<String> arguments = commandWithArgs.getArgumentsWithoutKey();
+        double longitude = Double.parseDouble(arguments.get(0));
+        double latitude = Double.parseDouble(arguments.get(1));
+        String member = arguments.get(2);
+
+        int wasAdded = storage.addCoordinate(key, longitude, latitude, member);
+        RespParser.writeIntegerString(wasAdded, outputStream);
+    }
 }
