@@ -283,10 +283,6 @@ public class Storage {
         }
 
         sets.add(set);
-        sets = sets.stream()
-                .sorted(Comparator.comparingDouble(SortedSet::getScore)
-                        .thenComparing(SortedSet::getMember))
-                .toList();
         zSet.put(key, sets);
 
         return wasAdded ? 1 : 0;
