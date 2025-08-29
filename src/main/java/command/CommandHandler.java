@@ -304,7 +304,10 @@ public class CommandHandler {
             return;
         }
 
+        int score = 0;
+
         int wasAdded = storage.addCoordinate(key, longitude, latitude, member);
+        storage.addMember(key, member, score);
         RespParser.writeIntegerString(wasAdded, outputStream);
     }
 }
