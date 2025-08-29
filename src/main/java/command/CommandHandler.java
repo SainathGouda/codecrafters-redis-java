@@ -241,4 +241,13 @@ public class CommandHandler {
         int wasAdded = storage.addMember(zSetKey, zSetMember, zSetScore);
         RespParser.writeIntegerString(wasAdded, outputStream);
     }
+
+    public void handleZRank(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String zSetKey = commandWithArgs.getKey();
+        List<String> arguments = commandWithArgs.getArgumentsWithoutKey();
+        String zSetMember = arguments.get(0);
+
+        int rank = storage.findMemberRanking(zSetKey, zSetMember);
+        RespParser.writeIntegerString(rank, outputStream);
+    }
 }

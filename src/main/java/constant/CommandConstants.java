@@ -37,4 +37,5 @@ public class CommandConstants {
 
     //Sorted Sets
     public static final String ZADD = "ZADD";
+    public static final String ZRANK = "ZRANK";
 }

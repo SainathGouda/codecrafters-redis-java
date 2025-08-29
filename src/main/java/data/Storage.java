@@ -7,9 +7,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 class SortedSet {
     String member;
@@ -43,7 +43,7 @@ public class Storage {
     private final static ConcurrentHashMap<String, StreamCache> streamMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Thread, List<CommandParser.CommandWithArgs>> transactionMap = new ConcurrentHashMap<>();
     public final static CopyOnWriteArrayList<OutputStream> slaveOutputStreams = new CopyOnWriteArrayList<>();
-    private final static TreeMap<String, List<SortedSet>> zSet = new TreeMap<>();
+    private final static ConcurrentHashMap<String, List<SortedSet>> zSet = new ConcurrentHashMap<>();
 
     public void setPort(int port) {
         config.put("port", String.valueOf(port));
@@ -282,8 +282,25 @@ public class Storage {
         }
 
         sets.add(set);
+        sets = sets.stream()
+                .sorted()
+                .collect(Collectors.toList());
         zSet.put(key, sets);
 
         return wasAdded ? 1 : 0;
+    }
+
+    public int findMemberRanking(String key, String member){
+        List<SortedSet> sets = zSet.getOrDefault(key, new ArrayList<>());
+
+        int rank = -1;
+        for (SortedSet existingMember : sets) {
+            rank++;
+            if (existingMember.getMember().equals(member)) {
+                break;
+            }
+        }
+
+        return rank;
     }
 }
