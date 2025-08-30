@@ -325,7 +325,7 @@ public class CommandHandler {
             if (Objects.equals(score, "-1")) {
                 RespParser.writeArrayLength(1, outputStream);
                 outputStream.write("*-1\r\n");
-                break;
+                continue;
             }
 //            List<String> coordinates = Decode.decode(Long.parseLong(score));
             List<String> coordinate = new ArrayList<>();
