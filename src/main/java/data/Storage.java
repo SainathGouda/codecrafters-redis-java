@@ -13,14 +13,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 class SortedSet {
     String member;
-    long score;
+    double score;
 
-    public SortedSet(String member, long score) {
+    public SortedSet(String member, double score) {
         this.member = member;
         this.score = score;
     }
 
-    public long getScore() {
+    public double getScore() {
         return score;
     }
 
@@ -266,7 +266,7 @@ public class Storage {
     }
 
     //Sorted Sets
-    public int addMember(String key, String member, long score){
+    public int addMember(String key, String member, double score){
         boolean wasAdded = true;
         SortedSet set = new SortedSet(member, score);
 
@@ -342,7 +342,7 @@ public class Storage {
         return zSet.getOrDefault(key, new ArrayList<>()).size();
     }
 
-    public long getMemberScore(String key, String member){
+    public double getMemberScore(String key, String member){
         List<SortedSet> sets = zSet.getOrDefault(key, new ArrayList<>());
         for (SortedSet existingMember : sets) {
             if (existingMember.getMember().equals(member)) {

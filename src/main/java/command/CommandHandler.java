@@ -235,7 +235,7 @@ public class CommandHandler {
     public void handleZAdd(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         String zSetKey = commandWithArgs.getKey();
         List<String> arguments = commandWithArgs.getArgumentsWithoutKey();
-        long zSetScore = Long.parseLong(arguments.get(0));
+        double zSetScore = Double.parseDouble(arguments.get(0));
         String zSetMember = arguments.get(1);
 
         int wasAdded = storage.addMember(zSetKey, zSetMember, zSetScore);
@@ -315,12 +315,12 @@ public class CommandHandler {
 
         RespParser.writeArrayLength(places.size(), outputStream);
         for (String place : places) {
-            long score = storage.getMemberScore(key, place);
+            double score = storage.getMemberScore(key, place);
             if (score==-1) {
                 outputStream.write(RESPConstants.NULL_ARRAY_STRING);
                 continue;
             }
-            List<String> coordinate = Decode.decode(score);
+            List<String> coordinate = Decode.decode((long) score);
             RespParser.writeArray(coordinate.size(), coordinate, outputStream);
         }
     }
