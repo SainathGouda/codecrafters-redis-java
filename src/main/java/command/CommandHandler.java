@@ -324,7 +324,7 @@ public class CommandHandler {
                 outputStream.write(RESPConstants.NULL_ARRAY_STRING);
                 continue;
             }
-            List<String> coordinate = Decode.decode(Long.parseLong(score));
+            List<String> coordinate = Decode.decode((long)Double.parseDouble(score));
             RespParser.writeArray(coordinate.size(), coordinate, outputStream);
         }
     }
