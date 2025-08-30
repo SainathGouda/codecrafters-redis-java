@@ -44,7 +44,8 @@ public class Storage {
     private final ConcurrentHashMap<Thread, List<CommandParser.CommandWithArgs>> transactionMap = new ConcurrentHashMap<>();
     public final static CopyOnWriteArrayList<OutputStream> slaveOutputStreams = new CopyOnWriteArrayList<>();
     private final static ConcurrentHashMap<String, List<SortedSet>> zSet = new ConcurrentHashMap<>();
-    private final CopyOnWriteArrayList<String> subscriptionMap = new CopyOnWriteArrayList<>();
+    private final static ConcurrentHashMap<Thread, List<String>> subscriptionMap = new ConcurrentHashMap<>();
+//    private final CopyOnWriteArrayList<String> subscriptionMap = new CopyOnWriteArrayList<>();
 
     public void setPort(int port) {
         config.put("port", String.valueOf(port));
@@ -367,7 +368,7 @@ public class Storage {
 
     //Pub/Sub
     public int subscribe(String channel){
-        subscriptionMap.add(channel);
-        return subscriptionMap.size();
+        subscriptionMap.getOrDefault(Thread.currentThread(), new ArrayList<>()).add(channel);
+        return subscriptionMap.get(Thread.currentThread()).size();
     }
 }
