@@ -14,4 +14,5 @@ public class ResponseConstants {
     public static final String NO_SUCH_FILE="ERR no such file";
     public static final String CANNOT_READ_DB_FILE="ERR error reading database file";
     public static final String COORDINATE_ERROR="ERR invalid longitude,latitude pair";
+    public static final String SUBSCRIBED_MODE="ERR Can't execute the command in subscribed mode: only (P|S)SUBSCRIBE / (P|S)UNSUBSCRIBE / PING / QUIT / RESET are allowed in this context";
 }

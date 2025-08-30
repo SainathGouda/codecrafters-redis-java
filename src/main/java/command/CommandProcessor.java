@@ -13,6 +13,10 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
     public void processCommand(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         String commandName = commandWithArgs.getCommand();
 
+        if (storage().isSubscribed()) {
+            RespParser.writeErrorString(ResponseConstants.SUBSCRIBED_MODE, outputStream);
+            return;
+        }
         if (!commandName.equals(CommandConstants.EXEC) && !commandName.equals(CommandConstants.DISCARD) && storage.multiExist()) {
             storage.addTransaction(commandWithArgs);
             RespParser.writeSimpleString(ResponseConstants.QUEUED, outputStream);
