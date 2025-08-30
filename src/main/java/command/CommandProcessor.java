@@ -9,14 +9,18 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
+    private boolean isSubscribed(String commandName, BufferedWriter outputStream) throws IOException {
+        if (storage.isSubscribed()) {
+            RespParser.writeErrorString(ResponseConstants.SUBSCRIBED_MODE, outputStream);
+            outputStream.write("- ERR Can't execute '"+commandName+"': only (P|S)SUBSCRIBE / (P|S)UNSUBSCRIBE / PING / QUIT / RESET are allowed in this context");
+            return true;
+        }
+        else { return false; }
+    }
 
     public void processCommand(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         String commandName = commandWithArgs.getCommand();
 
-        if (storage().isSubscribed()) {
-            RespParser.writeErrorString(ResponseConstants.SUBSCRIBED_MODE, outputStream);
-            return;
-        }
         if (!commandName.equals(CommandConstants.EXEC) && !commandName.equals(CommandConstants.DISCARD) && storage.multiExist()) {
             storage.addTransaction(commandWithArgs);
             RespParser.writeSimpleString(ResponseConstants.QUEUED, outputStream);
@@ -27,12 +31,15 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
                 commandHandler.handlePing(outputStream);
                 break;
             case CommandConstants.ECHO:
+                if (isSubscribed(commandName, outputStream)) return;
                 commandHandler.handleEcho(outputStream, commandWithArgs);
                 break;
             case CommandConstants.SET:
+                if (isSubscribed(commandName, outputStream)) return;
                 commandHandler.handleSet(outputStream, commandWithArgs);
                 break;
             case CommandConstants.GET:
+                if (isSubscribed(commandName, outputStream)) return;
                 commandHandler.handleGet(outputStream, commandWithArgs);
                 break;
             //Lists
