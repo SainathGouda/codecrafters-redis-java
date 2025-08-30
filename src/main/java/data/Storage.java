@@ -368,7 +368,9 @@ public class Storage {
 
     //Pub/Sub
     public int subscribe(String channel){
-        subscriptionMap.getOrDefault(Thread.currentThread(), new ArrayList<>()).add(channel);
+        List<String> channels = subscriptionMap.getOrDefault(Thread.currentThread(), new ArrayList<>());
+        channels.add(channel);
+        subscriptionMap.put(Thread.currentThread(), channels);
         return subscriptionMap.get(Thread.currentThread()).size();
     }
 }
