@@ -7,6 +7,8 @@ import util.RespParser;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
     private boolean isSubscribed(String commandName, BufferedWriter outputStream) throws IOException {
@@ -27,6 +29,13 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
         }
         switch (commandName) {
             case CommandConstants.PING:
+                if(storage.isSubscribed()) {
+                    List<String> respond = new ArrayList<>();
+                    respond.add("pong");
+                    respond.add("");
+                    RespParser.writeArray(respond.size(),respond, outputStream);
+                    return;
+                }
                 commandHandler.handlePing(outputStream);
                 break;
             case CommandConstants.ECHO:
