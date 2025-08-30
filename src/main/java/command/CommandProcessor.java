@@ -113,6 +113,9 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
             case CommandConstants.GEOADD:
                 commandHandler.handleGeoAdd(outputStream, commandWithArgs);
                 break;
+            case CommandConstants.GEOPOS:
+                commandHandler.handleGeoPos(outputStream, commandWithArgs);
+                break;
         }
     }
 }

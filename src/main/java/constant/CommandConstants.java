@@ -45,4 +45,5 @@ public class CommandConstants {
 
     //Geospatial
     public static final String GEOADD = "GEOADD";
+    public static final String GEOPOS = "GEOPOS";
 }

@@ -307,8 +307,20 @@ public class CommandHandler {
 
         double score = Encode.encode(latitude, longitude);
 
-        int wasAdded = storage.addCoordinate(key, longitude, latitude, member);
-        storage.addMember(key, member, score);
+//        int wasAdded = storage.addCoordinate(key, longitude, latitude, member);
+        int wasAdded = storage.addMember(key, member, score);
         RespParser.writeIntegerString(wasAdded, outputStream);
+    }
+
+    public void handleGeoPos(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String key = commandWithArgs.getKey();
+        List<String> places = commandWithArgs.getArgumentsWithoutKey();
+
+        RespParser.writeArrayLength(places.size(), outputStream);
+        for (String place : places) {
+            String score = storage.getMemberScore(key, place);
+            List<String> coordinates = Decode.decode(Long.parseLong(score));
+            RespParser.writeArray(coordinates.size(), coordinates, outputStream);
+        }
     }
 }

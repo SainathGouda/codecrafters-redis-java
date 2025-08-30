@@ -2,19 +2,12 @@ package util;
 
 import constant.Constant;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Decode {
     private static final double LATITUDE_RANGE = Constant.MAX_LATITUDE - Constant.MIN_LATITUDE;
     private static final double LONGITUDE_RANGE = Constant.MAX_LONGITUDE - Constant.MIN_LONGITUDE;
-
-    static class Coordinates {
-        double latitude;
-        double longitude;
-
-        Coordinates(double latitude, double longitude) {
-            this.latitude = latitude;
-            this.longitude = longitude;
-        }
-    }
 
     private static int compactInt64ToInt32(long v) {
         v = v & 0x5555555555555555L;
@@ -26,7 +19,7 @@ public class Decode {
         return (int) v;
     }
 
-    private static Coordinates convertGridNumbersToCoordinates(int gridLatitudeNumber, int gridLongitudeNumber) {
+    private static List<String> convertGridNumbersToCoordinates(int gridLatitudeNumber, int gridLongitudeNumber) {
         // Calculate the grid boundaries
         double gridLatitudeMin = Constant.MIN_LATITUDE + LATITUDE_RANGE * (gridLatitudeNumber / Math.pow(2, 26));
         double gridLatitudeMax = Constant.MIN_LATITUDE + LATITUDE_RANGE * ((gridLatitudeNumber + 1) / Math.pow(2, 26));
@@ -37,10 +30,14 @@ public class Decode {
         double latitude = (gridLatitudeMin + gridLatitudeMax) / 2;
         double longitude = (gridLongitudeMin + gridLongitudeMax) / 2;
 
-        return new Coordinates(latitude, longitude);
+        List<String> coordinates = new ArrayList<>();
+        coordinates.add(String.valueOf(longitude));
+        coordinates.add(String.valueOf(latitude));
+
+        return coordinates;
     }
 
-    public static Coordinates decode(long geoCode) {
+    public static List<String> decode(long geoCode) {
         // Align bits of both latitude and longitude to take even-numbered position
         long y = geoCode >> 1;
         long x = geoCode;
