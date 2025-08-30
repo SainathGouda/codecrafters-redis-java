@@ -11,7 +11,6 @@ import java.io.IOException;
 public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
     private boolean isSubscribed(String commandName, BufferedWriter outputStream) throws IOException {
         if (storage.isSubscribed()) {
-            RespParser.writeErrorString(ResponseConstants.SUBSCRIBED_MODE, outputStream);
             outputStream.write("- ERR Can't execute '"+commandName+"': only (P|S)SUBSCRIBE / (P|S)UNSUBSCRIBE / PING / QUIT / RESET are allowed in this context");
             return true;
         }
