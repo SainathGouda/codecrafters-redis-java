@@ -278,7 +278,7 @@ public class CommandHandler {
         List<String> arguments = commandWithArgs.getArgumentsWithoutKey();
         String zSetMember = arguments.get(0);
 
-        String score = storage.getMemberScore(zSetKey, zSetMember);
+        String score = String.valueOf(storage.getMemberScore(zSetKey, zSetMember));
 
         RespParser.writeBulkString(score, outputStream);
     }
@@ -319,12 +319,12 @@ public class CommandHandler {
 
         RespParser.writeArrayLength(places.size(), outputStream);
         for (String place : places) {
-            String score = storage.getMemberScore(key, place);
-            if (Objects.equals(score, "-1")) {
+            long score = storage.getMemberScore(key, place);
+            if (score==-1) {
                 outputStream.write(RESPConstants.NULL_ARRAY_STRING);
                 continue;
             }
-            List<String> coordinate = Decode.decode(Long.parseLong(score));
+            List<String> coordinate = Decode.decode(score);
             RespParser.writeArray(coordinate.size(), coordinate, outputStream);
         }
     }

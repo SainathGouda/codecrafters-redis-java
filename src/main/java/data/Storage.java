@@ -20,7 +20,7 @@ class SortedSet {
         this.score = score;
     }
 
-    public double getScore() {
+    public long getScore() {
         return score;
     }
 
@@ -341,15 +341,15 @@ public class Storage {
         return zSet.getOrDefault(key, new ArrayList<>()).size();
     }
 
-    public String getMemberScore(String key, String member){
+    public long getMemberScore(String key, String member){
         List<SortedSet> sets = zSet.getOrDefault(key, new ArrayList<>());
         for (SortedSet existingMember : sets) {
             if (existingMember.getMember().equals(member)) {
-                return String.valueOf(existingMember.getScore());
+                return existingMember.getScore();
             }
         }
 
-        return "-1";
+        return -1;
     }
 
     public int removeMember(String key, String member){
