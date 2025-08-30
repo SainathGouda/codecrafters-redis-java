@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.List;
+import java.util.Objects;
 
 public class CommandHandler {
     Storage storage;
@@ -316,14 +317,30 @@ public class CommandHandler {
         String key = commandWithArgs.getKey();
         List<String> places = commandWithArgs.getArgumentsWithoutKey();
 
-        RespParser.writeArrayLength(places.size(), outputStream);
+        boolean exist = true;
+        List<List<String>> coordinates = new ArrayList<>();
         for (String place : places) {
             String score = storage.getMemberScore(key, place);
+            if (Objects.equals(score, "-1")) {
+                exist = false;
+                break;
+            }
 //            List<String> coordinates = Decode.decode(Long.parseLong(score));
-            List<String> coordinates = new ArrayList<>();
-            coordinates.add("0");
-            coordinates.add("0");
-            RespParser.writeArray(coordinates.size(), coordinates, outputStream);
+            List<String> coordinate = new ArrayList<>();
+            coordinate.add("0");
+            coordinate.add("0");
+            coordinates.add(coordinate);
+        }
+
+        if (!exist) {
+            RespParser.writeArrayLength(1, outputStream);
+            outputStream.write("*-1\r\n");
+            return;
+        }
+
+        RespParser.writeArrayLength(places.size(), outputStream);
+        for (List<String> coordinate : coordinates) {
+            RespParser.writeArray(coordinate.size(), coordinate, outputStream);
         }
     }
 }

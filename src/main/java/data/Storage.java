@@ -34,36 +34,6 @@ class SortedSet {
     }
 }
 
-class Coordinates {
-    String key;
-    double longitude;
-    double latitude;
-    String member;
-
-    public Coordinates(String key, double longitude, double latitude, String member) {
-        this.key = key;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.member = member;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public String getMember() {
-        return member;
-    }
-}
-
 public class Storage {
     private final static ConcurrentHashMap<String, String> config = new ConcurrentHashMap<>();
     private final static ConcurrentHashMap<String, Socket> socketConfig = new ConcurrentHashMap<>();
@@ -74,7 +44,6 @@ public class Storage {
     private final ConcurrentHashMap<Thread, List<CommandParser.CommandWithArgs>> transactionMap = new ConcurrentHashMap<>();
     public final static CopyOnWriteArrayList<OutputStream> slaveOutputStreams = new CopyOnWriteArrayList<>();
     private final static ConcurrentHashMap<String, List<SortedSet>> zSet = new ConcurrentHashMap<>();
-    private final static ConcurrentHashMap<String, List<Coordinates>> coordinateSet = new ConcurrentHashMap<>();
 
     public void setPort(int port) {
         config.put("port", String.valueOf(port));
