@@ -44,7 +44,7 @@ public class Storage {
     private final ConcurrentHashMap<Thread, List<CommandParser.CommandWithArgs>> transactionMap = new ConcurrentHashMap<>();
     public final static CopyOnWriteArrayList<OutputStream> slaveOutputStreams = new CopyOnWriteArrayList<>();
     private final static ConcurrentHashMap<String, List<SortedSet>> zSet = new ConcurrentHashMap<>();
-    private final static CopyOnWriteArrayList<String> subscriptionMap = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<String> subscriptionMap = new CopyOnWriteArrayList<>();
 
     public void setPort(int port) {
         config.put("port", String.valueOf(port));
