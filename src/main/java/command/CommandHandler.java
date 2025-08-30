@@ -10,10 +10,7 @@ import util.*;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HexFormat;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class CommandHandler {
     Storage storage;
@@ -308,7 +305,6 @@ public class CommandHandler {
 
         long score = Encode.encode(latitude, longitude);
 
-//        int wasAdded = storage.addCoordinate(key, longitude, latitude, member);
         int wasAdded = storage.addMember(key, member, score);
         RespParser.writeIntegerString(wasAdded, outputStream);
     }
@@ -327,5 +323,15 @@ public class CommandHandler {
             List<String> coordinate = Decode.decode(score);
             RespParser.writeArray(coordinate.size(), coordinate, outputStream);
         }
+    }
+
+    public void handleSubscribe(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String channel = commandWithArgs.getKey();
+        int channelsSubscribed = storage.subscribe(channel);
+
+        RespParser.writeArrayLength(3, outputStream);
+        RespParser.writeBulkString(CommandConstants.SUBSCRIBE.toLowerCase(Locale.ROOT), outputStream);
+        RespParser.writeBulkString(channel, outputStream);
+        RespParser.writeIntegerString(channelsSubscribed, outputStream);
     }
 }
