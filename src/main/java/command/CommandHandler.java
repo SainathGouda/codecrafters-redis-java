@@ -323,6 +323,7 @@ public class CommandHandler {
         for (String place : places) {
             String score = storage.getMemberScore(key, place);
             if (Objects.equals(score, "-1")) {
+                RespParser.writeArrayLength(1, outputStream);
                 outputStream.write("*-1\r\n");
                 break;
             }
