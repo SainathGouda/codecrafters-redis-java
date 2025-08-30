@@ -13,9 +13,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 class SortedSet {
     String member;
-    double score;
+    long score;
 
-    public SortedSet(String member, double score) {
+    public SortedSet(String member, long score) {
         this.member = member;
         this.score = score;
     }
@@ -265,7 +265,7 @@ public class Storage {
     }
 
     //Sorted Sets
-    public int addMember(String key, String member, double score){
+    public int addMember(String key, String member, long score){
         boolean wasAdded = true;
         SortedSet set = new SortedSet(member, score);
 
