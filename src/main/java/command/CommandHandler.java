@@ -319,7 +319,10 @@ public class CommandHandler {
         RespParser.writeArrayLength(places.size(), outputStream);
         for (String place : places) {
             String score = storage.getMemberScore(key, place);
-            List<String> coordinates = Decode.decode(Long.parseLong(score));
+//            List<String> coordinates = Decode.decode(Long.parseLong(score));
+            List<String> coordinates = new ArrayList<>();
+            coordinates.add("0");
+            coordinates.add("0");
             RespParser.writeArray(coordinates.size(), coordinates, outputStream);
         }
     }

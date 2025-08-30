@@ -394,27 +394,4 @@ public class Storage {
 
         return 0;
     }
-
-    //Geospatial
-    public int addCoordinate(String key, double longitude, double latitude, String member){
-        boolean wasAdded = true;
-        Coordinates set = new Coordinates(member, longitude, latitude, member);
-
-        List<Coordinates> sets = coordinateSet.getOrDefault(key, new ArrayList<>());
-
-        Iterator<Coordinates> iterator = sets.iterator();
-        while (iterator.hasNext()) {
-            Coordinates existingMember = iterator.next();
-            if (existingMember.getMember().equals(member)) {
-                iterator.remove();
-                wasAdded = false;
-                break;
-            }
-        }
-
-        sets.add(set);
-        coordinateSet.put(key, sets);
-
-        return wasAdded ? 1 : 0;
-    }
 }
