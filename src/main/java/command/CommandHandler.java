@@ -317,30 +317,31 @@ public class CommandHandler {
         String key = commandWithArgs.getKey();
         List<String> places = commandWithArgs.getArgumentsWithoutKey();
 
-        boolean exist = true;
-        List<List<String>> coordinates = new ArrayList<>();
+//        boolean exist = true;
+//        List<List<String>> coordinates = new ArrayList<>();
+        RespParser.writeArrayLength(places.size(), outputStream);
         for (String place : places) {
             String score = storage.getMemberScore(key, place);
             if (Objects.equals(score, "-1")) {
-                exist = false;
+                outputStream.write("*-1\r\n");
                 break;
             }
 //            List<String> coordinates = Decode.decode(Long.parseLong(score));
             List<String> coordinate = new ArrayList<>();
             coordinate.add("0");
             coordinate.add("0");
-            coordinates.add(coordinate);
-        }
-
-        if (!exist) {
-            RespParser.writeArrayLength(1, outputStream);
-            outputStream.write("*-1\r\n");
-            return;
-        }
-
-        RespParser.writeArrayLength(places.size(), outputStream);
-        for (List<String> coordinate : coordinates) {
             RespParser.writeArray(coordinate.size(), coordinate, outputStream);
         }
+
+//        if (!exist) {
+//            RespParser.writeArrayLength(1, outputStream);
+//            outputStream.write("*-1\r\n");
+//            return;
+//        }
+//
+//        RespParser.writeArrayLength(places.size(), outputStream);
+//        for (List<String> coordinate : coordinates) {
+//            RespParser.writeArray(coordinate.size(), coordinate, outputStream);
+//        }
     }
 }
