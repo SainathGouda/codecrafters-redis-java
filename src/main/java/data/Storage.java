@@ -45,7 +45,7 @@ public class Storage {
     public final static CopyOnWriteArrayList<OutputStream> slaveOutputStreams = new CopyOnWriteArrayList<>();
     private final static ConcurrentHashMap<String, List<SortedSet>> zSet = new ConcurrentHashMap<>();
     private final static ConcurrentHashMap<Thread, List<String>> subscriptionMap = new ConcurrentHashMap<>();
-    private boolean isSubscribed = false;
+    private final static ConcurrentHashMap<Thread, Boolean> currentSubscribed = new ConcurrentHashMap<>();
 
     public void setPort(int port) {
         config.put("port", String.valueOf(port));
@@ -371,11 +371,12 @@ public class Storage {
         List<String> channels = subscriptionMap.getOrDefault(Thread.currentThread(), new ArrayList<>());
         channels.add(channel);
         subscriptionMap.put(Thread.currentThread(), channels);
-        isSubscribed = true;
+        currentSubscribed.put(Thread.currentThread(), true);
         return subscriptionMap.get(Thread.currentThread()).size();
     }
 
     public boolean isSubscribed(){
-        return isSubscribed;
+        boolean subscribed = currentSubscribed.getOrDefault(Thread.currentThread(), false);
+        return subscribed;
     }
 }

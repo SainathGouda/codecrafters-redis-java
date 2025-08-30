@@ -9,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
     private boolean isSubscribed(String commandName, BufferedWriter outputStream) throws IOException {
@@ -31,8 +32,8 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
             case CommandConstants.PING:
                 if(storage.isSubscribed()) {
                     List<String> respond = new ArrayList<>();
-                    respond.add("pong");
-                    respond.add("");
+                    respond.add(ResponseConstants.PONG.toLowerCase(Locale.ROOT));
+                    respond.add(ResponseConstants.BLANK);
                     RespParser.writeArray(respond.size(),respond, outputStream);
                     return;
                 }
