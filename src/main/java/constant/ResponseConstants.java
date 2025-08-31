@@ -4,6 +4,7 @@ public class ResponseConstants {
     public static final String BLANK = "";
     public static final String PONG = "PONG";
     public static final String OK = "OK";
+    public static final String MESSAGE = "MESSAGE";
     public static final String QUEUED = "QUEUED";
     public static final String FULLRESYNC = "FULLRESYNC";
     public static final String ERROR = "ERR wrong number of arguments";
