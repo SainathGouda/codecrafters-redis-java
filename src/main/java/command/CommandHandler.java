@@ -341,8 +341,18 @@ public class CommandHandler {
         List<String> messages = commandWithArgs.getArgumentsWithoutKey();
         String message = messages.get(0);
 
-        int subscribers = storage.publish(channel, message, outputStream);
+        int subscribers = storage.publish(channel);
 
         RespParser.writeIntegerString(subscribers, outputStream);
+
+        List<BufferedWriter> streams = storage.getStreams(channel);
+        for (BufferedWriter stream : streams) {
+            if (storage.isSubscribed(stream)) {
+                RespParser.writeArrayLength(3, stream);
+                RespParser.writeBulkString(ResponseConstants.MESSAGE.toLowerCase(Locale.ROOT), stream);
+                RespParser.writeBulkString(channel, stream);
+                RespParser.writeBulkString(message, stream);
+            }
+        }
     }
 }

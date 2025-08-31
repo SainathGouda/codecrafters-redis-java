@@ -1,9 +1,6 @@
 package data;
 
 import command.CommandParser;
-import constant.CommandConstants;
-import constant.ResponseConstants;
-import util.RespParser;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -386,18 +383,13 @@ public class Storage {
         return subscribed;
     }
 
-    public int publish(String channel, String message, BufferedWriter outputStream) throws IOException {
+    public int publish(String channel) {
         List<BufferedWriter> streams = channelSubscription.getOrDefault(channel, new ArrayList<>());
 
-        for (BufferedWriter stream : streams) {
-            if (isSubscribed(stream)) {
-                RespParser.writeArrayLength(3, stream);
-                RespParser.writeBulkString(ResponseConstants.MESSAGE.toLowerCase(Locale.ROOT), stream);
-                RespParser.writeBulkString(channel, stream);
-                RespParser.writeBulkString(message, stream);
-            }
-        }
-
         return streams.size();
+    }
+
+    public List<BufferedWriter> getStreams(String channel){
+        return channelSubscription.getOrDefault(channel, new ArrayList<>());
     }
 }
