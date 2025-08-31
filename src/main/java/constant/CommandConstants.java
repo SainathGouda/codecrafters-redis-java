@@ -49,4 +49,5 @@ public class CommandConstants {
 
     //Pub/Sub
     public static final String SUBSCRIBE = "SUBSCRIBE";
+    public static final String PUBLISH = "PUBLISH";
 }

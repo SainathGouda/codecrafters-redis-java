@@ -325,6 +325,7 @@ public class CommandHandler {
         }
     }
 
+    //Pub/Sub
     public void handleSubscribe(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         String channel = commandWithArgs.getKey();
         int channelsSubscribed = storage.subscribe(channel);
@@ -333,5 +334,15 @@ public class CommandHandler {
         RespParser.writeBulkString(CommandConstants.SUBSCRIBE.toLowerCase(Locale.ROOT), outputStream);
         RespParser.writeBulkString(channel, outputStream);
         RespParser.writeIntegerString(channelsSubscribed, outputStream);
+    }
+
+    public void handlePublish(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String channel = commandWithArgs.getKey();
+        List<String> messages = commandWithArgs.getArgumentsWithoutKey();
+        String message = messages.get(0);
+
+        int subscribers = storage.publish(channel, message);
+
+        RespParser.writeIntegerString(subscribers, outputStream);
     }
 }
