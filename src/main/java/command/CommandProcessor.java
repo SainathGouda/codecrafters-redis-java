@@ -13,7 +13,7 @@ import java.util.Locale;
 
 public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
     private boolean isSubscribed(String commandName, BufferedWriter outputStream) throws IOException {
-        if (storage.isSubscribed(outputStream)) {
+        if (storage.isSubscribed()) {
             outputStream.write("-ERR Can't execute '"+commandName+"': only (P|S)SUBSCRIBE / (P|S)UNSUBSCRIBE / PING / QUIT / RESET are allowed in this context\r\n");
             return true;
         }
@@ -30,7 +30,7 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
         }
         switch (commandName) {
             case CommandConstants.PING:
-                if(storage.isSubscribed(outputStream)) {
+                if(storage.isSubscribed()) {
                     List<String> respond = new ArrayList<>();
                     respond.add(ResponseConstants.PONG.toLowerCase(Locale.ROOT));
                     respond.add(ResponseConstants.BLANK);

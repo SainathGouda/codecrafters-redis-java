@@ -3,7 +3,6 @@ package data;
 import command.CommandParser;
 
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.*;
@@ -43,9 +42,9 @@ public class Storage {
     private final ConcurrentHashMap<Thread, List<CommandParser.CommandWithArgs>> transactionMap = new ConcurrentHashMap<>();
     public final static CopyOnWriteArrayList<OutputStream> slaveOutputStreams = new CopyOnWriteArrayList<>();
     private final static ConcurrentHashMap<String, List<SortedSet>> zSet = new ConcurrentHashMap<>();
-    private final static ConcurrentHashMap<BufferedWriter, List<String>> subscriptionMap = new ConcurrentHashMap<>();
-    private final static ConcurrentHashMap<String, List<BufferedWriter>> channelSubscription = new ConcurrentHashMap<>();
-    private final static ConcurrentHashMap<BufferedWriter, Boolean> currentSubscribed = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<Socket, List<String>> subscriptionMap = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<String, List<Socket>> channelSubscription = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<Socket, Boolean> currentSubscribed = new ConcurrentHashMap<>();
 
     public void setPort(int port) {
         config.put("port", String.valueOf(port));
@@ -367,29 +366,30 @@ public class Storage {
     }
 
     //Pub/Sub
-    public int subscribe(String channel, BufferedWriter outputStream){
-        List<String> channels = subscriptionMap.getOrDefault(outputStream, new ArrayList<>());
+    public int subscribe(String channel){
+        Socket clientSocket = getClientSocket();
+        List<String> channels = subscriptionMap.getOrDefault(clientSocket, new ArrayList<>());
         channels.add(channel);
-        subscriptionMap.put(outputStream, channels);
-        List<BufferedWriter> streams = channelSubscription.getOrDefault(channel, new ArrayList<>());
-        streams.add(outputStream);
-        channelSubscription.put(channel, channelSubscription.getOrDefault(channel, streams));
-        currentSubscribed.put(outputStream, true);
-        return subscriptionMap.get(outputStream).size();
+        subscriptionMap.put(clientSocket, channels);
+        List<Socket> subscribers = channelSubscription.getOrDefault(channel, new ArrayList<>());
+        subscribers.add(clientSocket);
+        channelSubscription.put(channel, channelSubscription.getOrDefault(channel, subscribers));
+        currentSubscribed.put(clientSocket, true);
+        return subscriptionMap.get(clientSocket).size();
     }
 
-    public boolean isSubscribed(BufferedWriter outputStream){
-        boolean subscribed = currentSubscribed.getOrDefault(outputStream, false);
+    public boolean isSubscribed(){
+        boolean subscribed = currentSubscribed.getOrDefault(getClientSocket(), false);
         return subscribed;
     }
 
     public int publish(String channel) {
-        List<BufferedWriter> streams = channelSubscription.getOrDefault(channel, new ArrayList<>());
+        List<Socket> streams = channelSubscription.getOrDefault(channel, new ArrayList<>());
 
         return streams.size();
     }
 
-    public List<BufferedWriter> getStreams(String channel){
+    public List<Socket> getStreams(String channel){
         return channelSubscription.getOrDefault(channel, new ArrayList<>());
     }
 }

@@ -10,6 +10,7 @@ import util.*;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.Socket;
 import java.util.*;
 
 public class CommandHandler {
@@ -328,7 +329,7 @@ public class CommandHandler {
     //Pub/Sub
     public void handleSubscribe(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
         String channel = commandWithArgs.getKey();
-        int channelsSubscribed = storage.subscribe(channel, outputStream);
+        int channelsSubscribed = storage.subscribe(channel);
 
         RespParser.writeArrayLength(3, outputStream);
         RespParser.writeBulkString(CommandConstants.SUBSCRIBE.toLowerCase(Locale.ROOT), outputStream);
@@ -341,18 +342,18 @@ public class CommandHandler {
         List<String> messages = commandWithArgs.getArgumentsWithoutKey();
         String message = messages.get(0);
 
-        int subscribers = storage.publish(channel);
+        int subscribersCount = storage.publish(channel);
 
-        RespParser.writeIntegerString(subscribers, outputStream);
+        RespParser.writeIntegerString(subscribersCount, outputStream);
 
-        List<BufferedWriter> streams = storage.getStreams(channel);
-        System.out.println(streams);
-        for (BufferedWriter stream : streams) {
-            if (storage.isSubscribed(stream)) {
-                RespParser.writeArrayLength(3, stream);
-                RespParser.writeBulkString(ResponseConstants.MESSAGE.toLowerCase(Locale.ROOT), stream);
-                RespParser.writeBulkString(channel, stream);
-                RespParser.writeBulkString(message, stream);
+        List<Socket> subscribers = storage.getStreams(channel);
+        System.out.println(subscribers);
+        for (Socket subscriber : subscribers) {
+            if (storage.isSubscribed()) {
+                RespParser.writeArrayLength(3, subscriber.getOutputStream());
+                RespParser.writeBulkString(ResponseConstants.MESSAGE.toLowerCase(Locale.ROOT), subscriber.getOutputStream());
+                RespParser.writeBulkString(channel, subscriber.getOutputStream());
+                RespParser.writeBulkString(message, subscriber.getOutputStream());
             }
         }
     }

@@ -55,6 +55,10 @@ public class RespParser {
         outputStream.write((RESPConstants.ARRAY_PREFIX + length + RESPConstants.CRLF));
     }
 
+    public static void writeArrayLength(int length, OutputStream outputStream) throws IOException {
+        outputStream.write((RESPConstants.ARRAY_PREFIX + length + RESPConstants.CRLF).getBytes());
+    }
+
     public static void writeIntegerString(int message, BufferedWriter outputStream) throws IOException {
         outputStream.write(RESPConstants.INTEGER_PREFIX+message+RESPConstants.CRLF);
     }
