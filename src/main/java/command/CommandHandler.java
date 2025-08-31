@@ -346,6 +346,7 @@ public class CommandHandler {
         RespParser.writeIntegerString(subscribers, outputStream);
 
         List<BufferedWriter> streams = storage.getStreams(channel);
+        System.out.println(streams);
         for (BufferedWriter stream : streams) {
             if (storage.isSubscribed(stream)) {
                 RespParser.writeArrayLength(3, stream);
