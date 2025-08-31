@@ -392,4 +392,17 @@ public class Storage {
     public List<Socket> getStreams(String channel){
         return channelSubscription.getOrDefault(channel, new ArrayList<>());
     }
+
+    public int unsubscribe(String channel){
+        Socket clientSocket = getClientSocket();
+        List<String> channels = subscriptionMap.getOrDefault(clientSocket, new ArrayList<>());
+        if (channels.isEmpty()) {return 0;}
+        channels.remove(channel);
+        subscriptionMap.put(clientSocket, channels);
+        List<Socket> subscribers = channelSubscription.getOrDefault(channel, new ArrayList<>());
+        subscribers.remove(clientSocket);
+        channelSubscription.put(channel, channelSubscription.getOrDefault(channel, subscribers));
+        currentSubscribed.put(clientSocket, false);
+        return subscriptionMap.get(clientSocket).size();
+    }
 }

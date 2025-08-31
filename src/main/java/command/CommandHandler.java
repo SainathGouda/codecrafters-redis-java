@@ -357,4 +357,11 @@ public class CommandHandler {
             }
         }
     }
+
+    public void handleUnsubscribe(BufferedWriter outputStream, CommandParser.CommandWithArgs commandWithArgs) throws IOException {
+        String channel = commandWithArgs.getKey();
+        int channelsSubscribed = storage.unsubscribe(channel);
+
+        RespParser.writeIntegerString(channelsSubscribed, outputStream);
+    }
 }

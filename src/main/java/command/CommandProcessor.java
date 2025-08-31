@@ -143,6 +143,9 @@ public record CommandProcessor(CommandHandler commandHandler, Storage storage) {
             case CommandConstants.PUBLISH:
                 commandHandler.handlePublish(outputStream, commandWithArgs);
                 break;
+            case CommandConstants.UNSUBSCRIBE:
+                commandHandler.handleUnsubscribe(outputStream, commandWithArgs);
+                break;
         }
     }
 }
