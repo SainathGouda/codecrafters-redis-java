@@ -391,10 +391,10 @@ public class Storage {
 
         for (BufferedWriter stream : streams) {
             if (isSubscribed(stream)) {
-                RespParser.writeArrayLength(3, outputStream);
-                RespParser.writeBulkString(ResponseConstants.MESSAGE.toLowerCase(Locale.ROOT), outputStream);
-                RespParser.writeBulkString(channel, outputStream);
-                RespParser.writeBulkString(message, outputStream);
+                RespParser.writeArrayLength(3, stream);
+                RespParser.writeBulkString(ResponseConstants.MESSAGE.toLowerCase(Locale.ROOT), stream);
+                RespParser.writeBulkString(channel, stream);
+                RespParser.writeBulkString(message, stream);
             }
         }
 
